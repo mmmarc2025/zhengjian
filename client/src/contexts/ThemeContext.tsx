@@ -19,7 +19,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "dark-gradient",
+  defaultTheme = "light-contour",
   switchable = true,
 }: ThemeProviderProps) {
   const [styleTheme, setStyleThemeState] = useState<StyleTheme>(() => {

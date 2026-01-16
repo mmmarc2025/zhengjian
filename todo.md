@@ -106,3 +106,11 @@
 - [x] Add theme switcher feature (white contour style with blue/red/black colors)
 
 - [x] Update 謝龍介 photo with user-provided URL
+
+
+## Updates - 2026/01/16 (Phase 5)
+
+- [x] Add LINE login integration
+- [x] Add floating donation/sponsor heart button (bottom-right corner)
+
+- [x] Set white contour theme as default

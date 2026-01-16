@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES } from "@shared/constants";
+import { getLineLoginUrl } from "@/const";
 
 export default function Home() {
   const { user } = useAuth();
@@ -74,8 +75,8 @@ export default function Home() {
                 )}
               </div>
             ) : (
-              <Button variant="outline" size="sm" asChild>
-                <a href="/api/oauth/login">登入</a>
+              <Button variant="outline" size="sm" asChild className="bg-[#00B900] hover:bg-[#00A000] text-white border-[#00B900]">
+                <a href={getLineLoginUrl()}>LINE 登入</a>
               </Button>
             )}
           </div>
