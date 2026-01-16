@@ -82,8 +82,8 @@ async function getGoogleProfile(accessToken: string): Promise<{
 export function registerGoogleOAuthRoutes(app: Express) {
   // Google 登入起始點
   app.get("/api/auth/google", (req: Request, res: Response) => {
-    const origin = `${req.protocol}://${req.get("host")}`;
-    const redirectUri = `${origin}/api/auth/google/callback`;
+    // 使用固定的 political.now domain，而不是依賴 request.get_host()
+    const redirectUri = `https://political.now/api/auth/google/callback`;
     const state = Buffer.from(JSON.stringify({ 
       returnUrl: getQueryParam(req, "returnUrl") || "/",
       timestamp: Date.now() 
@@ -113,8 +113,8 @@ export function registerGoogleOAuthRoutes(app: Express) {
     }
 
     try {
-      const origin = `${req.protocol}://${req.get("host")}`;
-      const redirectUri = `${origin}/api/auth/google/callback`;
+      // 使用固定的 political.now domain
+      const redirectUri = `https://political.now/api/auth/google/callback`;
       
       // 解析 state 取得 returnUrl
       let returnUrl = "/";
