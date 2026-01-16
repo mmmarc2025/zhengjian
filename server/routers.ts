@@ -133,6 +133,11 @@ const policyRouter = router({
       return db.getPoliciesByCandidateId(input.candidateId);
     }),
 
+  countByCandidate: publicProcedure
+    .query(async () => {
+      return db.getPolicyCountsByCandidate();
+    }),
+
   getByCategory: publicProcedure
     .input(z.object({ categoryId: z.number() }))
     .query(async ({ input }) => {
@@ -200,6 +205,11 @@ const newsRouter = router({
         ...input,
         isPublished: true,
       });
+    }),
+
+  countByCandidate: publicProcedure
+    .query(async () => {
+      return db.getNewsCountsByCandidate();
     }),
 
   getById: publicProcedure
@@ -347,6 +357,28 @@ const candidateNewsRouter = router({
     return { results, totalCandidates: candidates.length };
   }),
 
+  // Create a news item (admin only)
+  create: adminProcedure
+    .input(z.object({
+      candidateId: z.number(),
+      title: z.string().min(1),
+      summary: z.string().optional(),
+      sourceUrl: z.string().optional(),
+      sourceName: z.string().optional(),
+      imageUrl: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const id = await db.createCandidateNews({
+        candidateId: input.candidateId,
+        title: input.title,
+        summary: input.summary,
+        sourceUrl: input.sourceUrl,
+        sourceName: input.sourceName,
+        imageUrl: input.imageUrl,
+      });
+      return { id };
+    }),
+
   // Delete a news item (admin only)
   delete: adminProcedure
     .input(z.object({ id: z.number() }))
@@ -485,6 +517,57 @@ const aiRouter = router({
     const news = await gemini.searchElectionNews();
     return { news };
   }),
+
+  // Search and save policies for a specific candidate
+  searchPolicies: adminProcedure
+    .input(z.object({ candidateId: z.number() }))
+    .mutation(async ({ input }) => {
+      const candidate = await db.getCandidateById(input.candidateId);
+      if (!candidate) throw new TRPCError({ code: "NOT_FOUND", message: "Candidate not found" });
+      
+      const categories = await db.getIssueCategories();
+      const categoryMap = new Map(categories.map(c => [c.name, c.id]));
+      
+      const policies = await gemini.generatePolicySummary(candidate.name, candidate.county, candidate.positionType);
+      const savedPolicies = [];
+      
+      for (const policy of policies) {
+        const categoryId = categoryMap.get(policy.category);
+        const id = await db.createPolicy({
+          candidateId: input.candidateId,
+          categoryId,
+          title: policy.title,
+          summary: policy.content,
+          isHighlight: false,
+        });
+        savedPolicies.push({ id, ...policy });
+      }
+      
+      return { policies: savedPolicies };
+    }),
+
+  // Search and save news for a specific candidate
+  searchNews: adminProcedure
+    .input(z.object({ candidateId: z.number() }))
+    .mutation(async ({ input }) => {
+      const candidate = await db.getCandidateById(input.candidateId);
+      if (!candidate) throw new TRPCError({ code: "NOT_FOUND", message: "Candidate not found" });
+      
+      const newsItems = await gemini.searchCandidateNews(candidate.name, candidate.county);
+      const savedNews = [];
+      
+      for (const item of newsItems) {
+        const id = await db.createCandidateNews({
+          candidateId: input.candidateId,
+          title: item.title,
+          summary: item.summary,
+          sourceName: item.source,
+        });
+        savedNews.push({ id, ...item });
+      }
+      
+      return { news: savedNews };
+    }),
 
   // Batch update: fetch and save news for all candidates
   batchUpdateNews: adminProcedure.mutation(async () => {

@@ -248,6 +248,42 @@ export async function deletePolicy(id: number) {
   await db.delete(policies).where(eq(policies.id, id));
 }
 
+export async function getPolicyCountsByCandidate(): Promise<Record<number, number>> {
+  const db = await getDb();
+  if (!db) return {};
+
+  const result = await db
+    .select({
+      candidateId: policies.candidateId,
+      count: sql<number>`count(*)`
+    })
+    .from(policies)
+    .groupBy(policies.candidateId);
+
+  return result.reduce((acc, row) => {
+    acc[row.candidateId] = Number(row.count);
+    return acc;
+  }, {} as Record<number, number>);
+}
+
+export async function getNewsCountsByCandidate(): Promise<Record<number, number>> {
+  const db = await getDb();
+  if (!db) return {};
+
+  const result = await db
+    .select({
+      candidateId: candidateNews.candidateId,
+      count: sql<number>`count(*)`
+    })
+    .from(candidateNews)
+    .groupBy(candidateNews.candidateId);
+
+  return result.reduce((acc, row) => {
+    acc[row.candidateId] = Number(row.count);
+    return acc;
+  }, {} as Record<number, number>);
+}
+
 // ============ News Functions ============
 export async function getNews(filters?: {
   candidateId?: number;

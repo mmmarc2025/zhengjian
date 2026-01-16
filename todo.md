@@ -255,3 +255,20 @@
 ### 新聞連結
 - [ ] News should link to actual announcement of candidacy
 - [ ] Ensure news is relevant to the candidate
+
+
+## 管理後台候選人功能改進 - 2026/01/16 (Phase 14)
+
+### 候選人列表改進
+- [x] Add checkbox selection for each candidate row
+- [x] Add status icons after candidate name (Image/Newspaper/ScrollText icons)
+- [x] Make candidate name clickable to edit page
+
+### 候選人編輯頁面
+- [x] Create AdminCandidateEdit page similar to frontend CandidateDetail
+- [x] Add manual policy add/edit functionality
+- [x] Add manual news add/edit functionality
+- [x] Add AI search for policies and news
+- [x] Add route in App.tsx
+- [x] Add searchPolicies and searchNews API endpoints
+- [x] Add candidateNews.create API endpoint

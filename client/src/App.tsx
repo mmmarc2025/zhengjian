@@ -11,6 +11,7 @@ import CandidateDetail from "./pages/CandidateDetail";
 import News from "./pages/News";
 // import Compare from "./pages/Compare"; // 暫時隱藏
 import Admin from "./pages/Admin";
+import AdminCandidateEdit from "./pages/AdminCandidateEdit";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 
@@ -23,6 +24,7 @@ function Router() {
       <Route path={"/news"} component={News} />
       {/* <Route path={"/compare"} component={Compare} /> */}
       <Route path={"/admin"} component={Admin} />
+      <Route path={"/admin/candidate/:id"} component={AdminCandidateEdit} />
       <Route path={"/login"} component={Login} />
       <Route path={"/settings"} component={Settings} />
       <Route path={"/404"} component={NotFound} />

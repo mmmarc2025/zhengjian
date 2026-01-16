@@ -15,8 +15,10 @@ import { Link, useLocation } from "wouter";
 import { 
   Vote, ChevronLeft, Users, FileText, Newspaper, MessageSquare,
   Plus, Pencil, Trash2, Check, X, Shield, BarChart3, Settings,
-  Sparkles, RefreshCw, Zap, Camera, ImageIcon, ExternalLink
+  Sparkles, RefreshCw, Zap, Camera, ImageIcon, ExternalLink,
+  Image, ScrollText, FileCheck
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES, ISSUE_CATEGORIES } from "@shared/constants";
 import { toast } from "sonner";
@@ -160,8 +162,34 @@ export default function Admin() {
 function CandidatesAdmin() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCandidate, setEditingCandidate] = useState<any>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [, setLocation] = useLocation();
   
   const { data: candidates, refetch } = trpc.candidate.list.useQuery({ limit: 100 });
+  
+  // 獲取候選人的政見和新聞數量
+  const { data: policyCounts } = trpc.policy.countByCandidate.useQuery();
+  const { data: newsCounts } = trpc.news.countByCandidate.useQuery();
+
+  const toggleSelect = (id: number) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (candidates && selectedIds.size === candidates.length) {
+      setSelectedIds(new Set());
+    } else if (candidates) {
+      setSelectedIds(new Set(candidates.map(c => c.id)));
+    }
+  };
   const createCandidate = trpc.candidate.create.useMutation({
     onSuccess: () => {
       refetch();
@@ -379,6 +407,12 @@ function CandidatesAdmin() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">
+                <Checkbox 
+                  checked={candidates && candidates.length > 0 && selectedIds.size === candidates.length}
+                  onCheckedChange={toggleSelectAll}
+                />
+              </TableHead>
               <TableHead>姓名</TableHead>
               <TableHead>政黨</TableHead>
               <TableHead>職位</TableHead>
@@ -388,50 +422,72 @@ function CandidatesAdmin() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {candidates?.map((candidate) => (
-              <TableRow key={candidate.id}>
-                <TableCell className="font-medium">{candidate.name}</TableCell>
-                <TableCell>
-                  {candidate.party && (
-                    <Badge variant="outline" className="text-xs">
-                      {candidate.party}
-                    </Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {POSITION_TYPES.find(p => p.id === candidate.positionType)?.name}
-                </TableCell>
-                <TableCell>{candidate.county}</TableCell>
-                <TableCell>
-                  {candidate.isIncumbent && (
-                    <Badge variant="secondary" className="text-xs">現任</Badge>
-                  )}
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => handleEdit(candidate)}
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => {
-                      if (confirm("確定要刪除此候選人嗎？")) {
-                        deleteCandidate.mutate({ id: candidate.id });
-                      }
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {candidates?.map((candidate) => {
+              const policyCount = policyCounts?.[candidate.id] || 0;
+              const newsCount = newsCounts?.[candidate.id] || 0;
+              const hasPhoto = !!candidate.photoUrl;
+              
+              return (
+                <TableRow key={candidate.id}>
+                  <TableCell>
+                    <Checkbox 
+                      checked={selectedIds.has(candidate.id)}
+                      onCheckedChange={() => toggleSelect(candidate.id)}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    <button
+                      className="text-left hover:text-primary hover:underline flex items-center gap-1"
+                      onClick={() => setLocation(`/admin/candidate/${candidate.id}`)}
+                    >
+                      {candidate.name}
+                      {hasPhoto && <span title="有照片"><Image className="w-3 h-3 text-green-600" /></span>}
+                      {newsCount > 0 && <span title={`${newsCount} 則新聞`}><Newspaper className="w-3 h-3 text-blue-600" /></span>}
+                      {policyCount > 0 && <span title={`${policyCount} 條政見`}><ScrollText className="w-3 h-3 text-orange-600" /></span>}
+                    </button>
+                  </TableCell>
+                  <TableCell>
+                    {candidate.party && (
+                      <Badge variant="outline" className="text-xs">
+                        {candidate.party}
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {POSITION_TYPES.find(p => p.id === candidate.positionType)?.name}
+                  </TableCell>
+                  <TableCell>{candidate.county}</TableCell>
+                  <TableCell>
+                    {candidate.isIncumbent && (
+                      <Badge variant="secondary" className="text-xs">現任</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setLocation(`/admin/candidate/${candidate.id}`)}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        if (confirm("確定要刪除此候選人嗎？")) {
+                          deleteCandidate.mutate({ id: candidate.id });
+                        }
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
             {(!candidates || candidates.length === 0) && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                   尚無候選人資料
                 </TableCell>
               </TableRow>
