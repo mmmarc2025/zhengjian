@@ -5,6 +5,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import * as db from "./db";
+import * as gemini from "./gemini";
 
 // Admin-only procedure
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -358,6 +359,113 @@ const statsRouter = router({
   }),
 });
 
+// ============ AI Router (Gemini) ============
+const aiRouter = router({
+  // Search candidate news using AI
+  searchCandidateNews: adminProcedure
+    .input(z.object({
+      candidateName: z.string().min(1),
+      county: z.string().min(1),
+    }))
+    .mutation(async ({ input }) => {
+      const news = await gemini.searchCandidateNews(input.candidateName, input.county);
+      return { news };
+    }),
+
+  // Generate policy summary for a candidate
+  generatePolicies: adminProcedure
+    .input(z.object({
+      candidateName: z.string().min(1),
+      county: z.string().min(1),
+      position: z.string().min(1),
+    }))
+    .mutation(async ({ input }) => {
+      const policies = await gemini.generatePolicySummary(
+        input.candidateName,
+        input.county,
+        input.position
+      );
+      return { policies };
+    }),
+
+  // Search latest election news
+  searchElectionNews: adminProcedure.mutation(async () => {
+    const news = await gemini.searchElectionNews();
+    return { news };
+  }),
+
+  // Batch update: fetch and save news for all candidates
+  batchUpdateNews: adminProcedure.mutation(async () => {
+    const candidates = await db.getCandidates({ isActive: true, limit: 100 });
+    const results: { candidateId: number; newsCount: number }[] = [];
+
+    for (const candidate of candidates) {
+      try {
+        const news = await gemini.searchCandidateNews(candidate.name, candidate.county);
+        for (const item of news) {
+          await db.createNews({
+            candidateId: candidate.id,
+            title: item.title,
+            summary: item.summary,
+            sourceName: item.source,
+            isPublished: true,
+          });
+        }
+        results.push({ candidateId: candidate.id, newsCount: news.length });
+      } catch (error) {
+        console.error(`Error fetching news for ${candidate.name}:`, error);
+        results.push({ candidateId: candidate.id, newsCount: 0 });
+      }
+    }
+
+    return { results, totalCandidates: candidates.length };
+  }),
+
+  // Batch update: generate policies for all candidates
+  batchUpdatePolicies: adminProcedure.mutation(async () => {
+    const candidates = await db.getCandidates({ isActive: true, limit: 100 });
+    const categories = await db.getIssueCategories();
+    const categoryMap = new Map(categories.map(c => [c.name, c.id]));
+    const results: { candidateId: number; policyCount: number }[] = [];
+
+    const positionNames: Record<string, string> = {
+      mayor: "縣市長",
+      councilor: "縣市議員",
+      township_mayor: "鄉鎮市長",
+      representative: "鄉鎮市民代表",
+      village_chief: "村里長",
+    };
+
+    for (const candidate of candidates) {
+      try {
+        const positionName = positionNames[candidate.positionType] || candidate.positionType;
+        const policies = await gemini.generatePolicySummary(
+          candidate.name,
+          candidate.county,
+          positionName
+        );
+        
+        for (const policy of policies) {
+          const categoryId = categoryMap.get(policy.category);
+          await db.createPolicy({
+            candidateId: candidate.id,
+            categoryId: categoryId || undefined,
+            title: policy.title,
+            content: policy.content,
+            summary: policy.content.substring(0, 100),
+          });
+        }
+        results.push({ candidateId: candidate.id, policyCount: policies.length });
+      } catch (error) {
+        console.error(`Error generating policies for ${candidate.name}:`, error);
+        results.push({ candidateId: candidate.id, policyCount: 0 });
+      }
+    }
+
+    return { results, totalCandidates: candidates.length };
+  }),
+});
+
 // ============ Main Router ============
 export const appRouter = router({
   system: systemRouter,
@@ -375,6 +483,7 @@ export const appRouter = router({
   comment: commentRouter,
   category: categoryRouter,
   stats: statsRouter,
+  ai: aiRouter,
 });
 
 export type AppRouter = typeof appRouter;

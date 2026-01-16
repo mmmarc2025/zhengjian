@@ -80,3 +80,17 @@
 - [x] Import candidate data sorted by position type
 
 - [x] Change website name from "politics.now" to "political.now"
+
+
+## Updates - 2026/01/16 (Phase 2)
+
+### Candidate Photos
+- [x] Search and upload photos for confirmed candidates (11 key candidates)
+- [x] Use silhouette placeholder for test candidates
+- [ ] Implement auto-search photo feature for new candidates
+
+### Gemini API Integration
+- [x] Integrate Gemini API for automated content updates
+- [x] Daily auto-search and update candidate policies (admin trigger)
+- [x] Daily auto-search and update election news (admin trigger)
+- [ ] Auto-search candidate photos when not available

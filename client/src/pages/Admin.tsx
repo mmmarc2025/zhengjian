@@ -14,7 +14,8 @@ import { trpc } from "@/lib/trpc";
 import { Link, useLocation } from "wouter";
 import { 
   Vote, ChevronLeft, Users, FileText, Newspaper, MessageSquare,
-  Plus, Pencil, Trash2, Check, X, Shield, BarChart3, Settings
+  Plus, Pencil, Trash2, Check, X, Shield, BarChart3, Settings,
+  Sparkles, RefreshCw, Zap
 } from "lucide-react";
 import { useState } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES, ISSUE_CATEGORIES } from "@shared/constants";
@@ -954,11 +955,37 @@ function CommentsAdmin() {
 
 // Statistics
 function StatsAdmin() {
-  const { data: stats } = trpc.stats.get.useQuery();
+  const { data: stats, refetch: refetchStats } = trpc.stats.get.useQuery();
   const seedCategories = trpc.stats.seed.useMutation({
     onSuccess: () => toast.success("議題類別已初始化"),
     onError: (e) => toast.error(e.message),
   });
+
+  // AI 自動更新功能
+  const batchUpdatePolicies = trpc.ai.batchUpdatePolicies.useMutation({
+    onSuccess: (data) => {
+      toast.success(`已為 ${data.totalCandidates} 位候選人更新政見`);
+      refetchStats();
+    },
+    onError: (e) => toast.error(`更新失敗: ${e.message}`),
+  });
+
+  const batchUpdateNews = trpc.ai.batchUpdateNews.useMutation({
+    onSuccess: (data) => {
+      toast.success(`已為 ${data.totalCandidates} 位候選人更新新聞`);
+      refetchStats();
+    },
+    onError: (e) => toast.error(`更新失敗: ${e.message}`),
+  });
+
+  const searchElectionNews = trpc.ai.searchElectionNews.useMutation({
+    onSuccess: (data) => {
+      toast.success(`找到 ${data.news.length} 則最新選舉新聞`);
+    },
+    onError: (e) => toast.error(`搜尋失敗: ${e.message}`),
+  });
+
+  const isAnyLoading = batchUpdatePolicies.isPending || batchUpdateNews.isPending || searchElectionNews.isPending;
 
   return (
     <div>
@@ -973,7 +1000,7 @@ function StatsAdmin() {
         </Button>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
         <Card className="bg-card border-border">
           <CardHeader>
             <CardDescription>候選人總數</CardDescription>
@@ -993,6 +1020,74 @@ function StatsAdmin() {
           </CardHeader>
         </Card>
       </div>
+
+      {/* AI 自動更新區塊 */}
+      <Card className="bg-card border-border mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-primary" />
+            AI 自動更新功能
+          </CardTitle>
+          <CardDescription>
+            使用 Gemini AI 自動搜尋並更新候選人政見與選舉新聞
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-3 gap-4">
+            <Button
+              variant="outline"
+              className="h-auto py-4 flex flex-col items-center gap-2"
+              onClick={() => batchUpdatePolicies.mutate()}
+              disabled={isAnyLoading}
+            >
+              {batchUpdatePolicies.isPending ? (
+                <RefreshCw className="w-6 h-6 animate-spin" />
+              ) : (
+                <FileText className="w-6 h-6 text-primary" />
+              )}
+              <span className="font-medium">自動更新政見</span>
+              <span className="text-xs text-muted-foreground">為所有候選人搜尋政見</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-auto py-4 flex flex-col items-center gap-2"
+              onClick={() => batchUpdateNews.mutate()}
+              disabled={isAnyLoading}
+            >
+              {batchUpdateNews.isPending ? (
+                <RefreshCw className="w-6 h-6 animate-spin" />
+              ) : (
+                <Newspaper className="w-6 h-6 text-accent" />
+              )}
+              <span className="font-medium">自動更新新聞</span>
+              <span className="text-xs text-muted-foreground">為所有候選人搜尋新聞</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-auto py-4 flex flex-col items-center gap-2"
+              onClick={() => searchElectionNews.mutate()}
+              disabled={isAnyLoading}
+            >
+              {searchElectionNews.isPending ? (
+                <RefreshCw className="w-6 h-6 animate-spin" />
+              ) : (
+                <Zap className="w-6 h-6 text-chart-3" />
+              )}
+              <span className="font-medium">搜尋選舉新聞</span>
+              <span className="text-xs text-muted-foreground">搜尋最新選情動態</span>
+            </Button>
+          </div>
+
+          {isAnyLoading && (
+            <div className="mt-4 p-4 bg-primary/10 rounded-lg text-center">
+              <RefreshCw className="w-5 h-5 animate-spin inline-block mr-2" />
+              <span className="text-sm">AI 正在處理中，請稍候...</span>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
