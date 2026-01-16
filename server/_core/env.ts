@@ -7,10 +7,10 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
-  // LINE OAuth
-  lineChannelId: process.env.LINE_CHANNEL_ID ?? "",
-  lineChannelSecret: process.env.LINE_CHANNEL_SECRET ?? "",
-  // Google OAuth
-  googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
-  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+  // LINE OAuth - 直接使用硬編碼憑證（繞過 Manus 系統環境變數）
+  lineChannelId: "2008905096",
+  lineChannelSecret: "6307397ba05cbfe045fdac532abe6290",
+  // Google OAuth - 直接使用硬編碼憑證（繞過 Manus 系統環境變數）
+  googleClientId: "957808745887-spn93h8kq679i4i4jto4lsbn53138gi6.apps.googleusercontent.com",
+  googleClientSecret: "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",
 };

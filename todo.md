@@ -144,3 +144,8 @@
 ### Required Callback URL Settings:
 - Google: `https://political.now/api/auth/google/callback`
 - LINE: `https://political.now/api/auth/line/callback`
+
+## Bug Fixes - 2026/01/16 (Phase 8)
+
+- [x] Fix Google OAuth using wrong client_id in production (hardcoded credentials)
+- [x] Fix LINE OAuth redirect_uri issue in production (hardcoded credentials)
