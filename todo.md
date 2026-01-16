@@ -78,3 +78,5 @@
 - [x] Update website name to "政見 politics.now"
 - [x] Search and collect 2026 announced candidates
 - [x] Import candidate data sorted by position type
+
+- [x] Change website name from "politics.now" to "political.now"

@@ -39,7 +39,7 @@ export default function Home() {
           <Link href="/" className="flex items-center gap-2">
             <Vote className="w-8 h-8 text-primary" />
             <span className="text-xl font-bold gradient-text">政見</span>
-            <span className="text-sm text-muted-foreground ml-1">politics.now</span>
+            <span className="text-sm text-muted-foreground ml-1">political.now</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-6">
@@ -103,7 +103,7 @@ export default function Home() {
           
           <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
             <span className="gradient-text">政見</span>
-            <span className="text-foreground"> politics.now</span>
+            <span className="text-foreground"> political.now</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
