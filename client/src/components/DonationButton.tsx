@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Heart, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,8 +9,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+// Stripe 贊助連結
+const STRIPE_DONATION_URL = "https://donate.stripe.com/fZu14ocP837LgY3btO4Ja0i";
+
 export function DonationButton() {
   const [open, setOpen] = useState(false);
+
+  const handleDonate = () => {
+    window.open(STRIPE_DONATION_URL, "_blank");
+  };
 
   return (
     <>
@@ -37,46 +44,37 @@ export function DonationButton() {
           </DialogHeader>
           
           <div className="space-y-4 pt-4">
-            {/* 贊助選項 */}
-            <div className="grid grid-cols-3 gap-3">
-              <Button
-                variant="outline"
-                className="h-16 flex flex-col items-center justify-center border-2 hover:border-red-500 hover:bg-red-50"
-                onClick={() => window.open("https://example.com/donate/100", "_blank")}
-              >
-                <span className="text-lg font-bold">$100</span>
-                <span className="text-xs text-muted-foreground">小額支持</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="h-16 flex flex-col items-center justify-center border-2 hover:border-red-500 hover:bg-red-50"
-                onClick={() => window.open("https://example.com/donate/500", "_blank")}
-              >
-                <span className="text-lg font-bold">$500</span>
-                <span className="text-xs text-muted-foreground">熱情贊助</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="h-16 flex flex-col items-center justify-center border-2 hover:border-red-500 hover:bg-red-50"
-                onClick={() => window.open("https://example.com/donate/1000", "_blank")}
-              >
-                <span className="text-lg font-bold">$1000</span>
-                <span className="text-xs text-muted-foreground">大力支持</span>
-              </Button>
+            {/* 贊助說明 */}
+            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+              <h4 className="font-medium text-sm">您的贊助將用於：</h4>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• 網站維運與伺服器費用</li>
+                <li>• 候選人資料蒐集與整理</li>
+                <li>• AI 自動化內容更新</li>
+                <li>• 持續開發新功能</li>
+              </ul>
             </div>
 
-            {/* 自訂金額 */}
+            {/* Stripe 贊助按鈕 */}
             <Button
-              className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white"
-              onClick={() => window.open("https://example.com/donate", "_blank")}
+              className="w-full h-14 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-lg font-medium"
+              onClick={handleDonate}
             >
-              <Heart className="w-4 h-4 mr-2" />
-              自訂金額贊助
+              <Heart className="w-5 h-5 mr-2 fill-current" />
+              前往贊助頁面
+              <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">
-              所有贊助款項將用於網站維運與內容製作
+              透過 Stripe 安全付款，支援信用卡、Apple Pay、Google Pay
             </p>
+
+            {/* 感謝訊息 */}
+            <div className="text-center pt-2 border-t border-border">
+              <p className="text-sm text-muted-foreground">
+                每一份支持都是我們前進的動力 ❤️
+              </p>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

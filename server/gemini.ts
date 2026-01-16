@@ -159,6 +159,50 @@ export async function searchElectionNews(): Promise<{
 }
 
 /**
+ * Search for latest news about a candidate with topic classification
+ * Used for the "Latest News" tab on candidate detail page
+ * Returns news with topic to avoid duplicates
+ */
+export async function searchCandidateLatestNews(candidateName: string, county: string): Promise<{
+  title: string;
+  summary: string;
+  source: string;
+  sourceUrl?: string;
+  topic: string;
+}[]> {
+  const prompt = `搜尋關於「${candidateName}」（${county}）的最新選舉相關新聞。
+請以 JSON 格式回傳最多 3 則最新新聞，格式如下：
+[
+  {
+    "title": "新聞標題",
+    "summary": "新聞摘要（約 100-150 字，包含重點內容）",
+    "source": "新聞來源（如：聯合報、自由時報、中時新聞網等）",
+    "sourceUrl": "新聞連結（如果有的話）",
+    "topic": "新聞主題分類（如：政見發表、選情分析、民調、造勢活動、政策辯論、爭議事件等）"
+  }
+]
+
+注意事項：
+1. 每則新聞的 topic 必須是獨特的，不要重複相同主題
+2. 優先選擇最新的新聞
+3. 只回傳 JSON，不要有其他文字
+4. 如果找不到相關新聞，回傳空陣列 []`;
+
+  try {
+    const response = await callGemini(prompt);
+    // Extract JSON from response
+    const jsonMatch = response.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    return [];
+  } catch (error) {
+    console.error("Error searching candidate latest news:", error);
+    return [];
+  }
+}
+
+/**
  * Search for candidate photo URL suggestion
  */
 export async function suggestCandidatePhoto(candidateName: string, party: string): Promise<string | null> {

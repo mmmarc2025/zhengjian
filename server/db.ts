@@ -7,7 +7,8 @@ import {
   news, InsertNews, News,
   comments, InsertComment, Comment,
   commentLikes, InsertCommentLike,
-  issueCategories, InsertIssueCategory, IssueCategory
+  issueCategories, InsertIssueCategory, IssueCategory,
+  candidateNews, InsertCandidateNews, CandidateNews
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -417,6 +418,87 @@ export async function getStatistics() {
     totalPolicies: policyCount?.count || 0,
     totalComments: commentCount?.count || 0,
   };
+}
+
+// ============ Candidate News Functions ============
+export async function getCandidateNews(filters: {
+  candidateId: number;
+  limit?: number;
+  offset?: number;
+}) {
+  const db = await getDb();
+  if (!db) return [];
+
+  let query = db.select().from(candidateNews)
+    .where(eq(candidateNews.candidateId, filters.candidateId))
+    .orderBy(desc(candidateNews.publishedAt));
+  
+  if (filters.limit) {
+    query = query.limit(filters.limit) as any;
+  }
+  if (filters.offset) {
+    query = query.offset(filters.offset) as any;
+  }
+
+  return query;
+}
+
+export async function getCandidateNewsByTopic(candidateId: number, topic: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select().from(candidateNews)
+    .where(and(
+      eq(candidateNews.candidateId, candidateId),
+      eq(candidateNews.topic, topic)
+    ))
+    .orderBy(desc(candidateNews.publishedAt))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createCandidateNews(data: InsertCandidateNews) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(candidateNews).values(data);
+  return result[0].insertId;
+}
+
+export async function updateCandidateNews(id: number, data: Partial<InsertCandidateNews>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.update(candidateNews).set(data).where(eq(candidateNews.id, id));
+}
+
+export async function deleteCandidateNews(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.delete(candidateNews).where(eq(candidateNews.id, id));
+}
+
+export async function upsertCandidateNewsByTopic(data: InsertCandidateNews) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // 檢查是否已有相同議題的新聞
+  if (data.topic) {
+    const existing = await getCandidateNewsByTopic(data.candidateId, data.topic);
+    if (existing) {
+      // 更新現有新聞
+      await updateCandidateNews(existing.id, {
+        ...data,
+        searchedAt: new Date(),
+      });
+      return existing.id;
+    }
+  }
+  
+  // 建立新新聞
+  return createCandidateNews(data);
 }
 
 // ============ Seed Data Functions ============

@@ -114,3 +114,12 @@
 - [x] Add floating donation/sponsor heart button (bottom-right corner)
 
 - [x] Set white contour theme as default
+
+
+## Updates - 2026/01/16 (Phase 6)
+
+- [x] Add candidate news table to database schema
+- [x] Add candidate news API endpoints
+- [x] Add "Latest News" tab to candidate detail page
+- [x] Integrate Gemini API for daily auto-search candidate news
+- [x] Update donation button with Stripe link (https://donate.stripe.com/fZu14ocP837LgY3btO4Ja0i)
