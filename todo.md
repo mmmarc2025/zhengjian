@@ -293,3 +293,11 @@
 - [x] Remove AI-generated summaries (they are fictional)
 - [x] Update frontend UI to display news link list for selection
 - [x] Allow admin to select which news to add
+
+
+## 新聞顯示格式修正 - 2026/01/16 (Phase 17)
+
+- [x] Remove "vertexaisearch" and "由 AI 自動搜尋整理" labels
+- [x] Show news date and source at the top (e.g., 2026/1/16 · 新頭殼)
+- [x] Show news title and summary in the middle
+- [x] Show news link at the bottom
