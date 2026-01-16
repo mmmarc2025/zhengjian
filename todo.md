@@ -219,3 +219,23 @@
 - [x] Adjust Navigation to white background with navy text
 - [x] Ensure text readability on light background
 - [x] Adjust Footer to light gray background
+
+
+## 全站調整 - 2026/01/16 (Phase 12)
+
+### 移除測試資料
+- [x] Remove test candidates from database
+- [x] Remove test news from database (deleted news without sourceUrl)
+
+### 統一頁面配色
+- [x] Candidates list page - white background
+- [x] Candidate detail page - white background
+- [x] News page - white background
+- [x] Compare page - white background
+- [x] Admin page - white background
+- [x] Login page - white background
+- [x] Settings page - white background
+
+### 修復新聞連結
+- [x] Ensure news items have valid external URLs
+- [x] Add clickable links to news cards (opens in new tab if sourceUrl exists)

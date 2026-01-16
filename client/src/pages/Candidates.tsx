@@ -38,22 +38,22 @@ export default function Candidates() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass">
+      {/* Navigation - White background */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
         <div className="container flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <Vote className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold gradient-text">政見</span>
+            <Vote className="w-8 h-8" style={{ color: '#A81C31' }} />
+            <span className="text-xl font-bold" style={{ color: '#A81C31' }}>政見</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/candidates" className="text-foreground font-medium">
+            <Link href="/candidates" className="font-medium" style={{ color: '#A81C31' }}>
               候選人
             </Link>
-            <Link href="/news" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/news" className="transition-colors hover:opacity-70" style={{ color: '#0A2342' }}>
               最新動態
             </Link>
-            <Link href="/compare" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/compare" className="transition-colors hover:opacity-70" style={{ color: '#0A2342' }}>
               政見比較
             </Link>
           </div>
@@ -66,13 +66,13 @@ export default function Candidates() {
           {/* Header */}
           <div className="mb-8">
             <Link href="/">
-              <Button variant="ghost" size="sm" className="mb-4 -ml-2">
+              <Button variant="ghost" size="sm" className="mb-4 -ml-2" style={{ color: '#0A2342' }}>
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 返回首頁
               </Button>
             </Link>
-            <h1 className="text-4xl font-bold mb-2">候選人資料庫</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-4xl font-bold mb-2" style={{ color: '#0A2342' }}>候選人資料庫</h1>
+            <p style={{ color: '#718096' }}>
               2026 九合一選舉全台候選人政見查詢
             </p>
           </div>

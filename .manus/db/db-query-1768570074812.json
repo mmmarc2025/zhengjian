@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COUNT(*) as count FROM news WHERE sourceUrl IS NULL OR sourceUrl = '';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT COUNT(*) as count FROM news WHERE sourceUrl IS NULL OR sourceUrl = '';",
+  "rows": [
+    {
+      "count": "114"
+    }
+  ],
+  "messages": [],
+  "stdout": "count\n114\n",
+  "stderr": "",
+  "execution_time_ms": 1538
+}

@@ -393,7 +393,7 @@ export default function Home() {
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Featured News - Large */}
               {latestNews[0] && (
-                <Link href={`/news/${latestNews[0].id}`} className="lg:col-span-2">
+                <a href={latestNews[0].sourceUrl || `/news/${latestNews[0].id}`} target={latestNews[0].sourceUrl ? "_blank" : "_self"} rel="noopener noreferrer" className="lg:col-span-2">
                   <Card className="news-card border-0 cursor-pointer h-full overflow-hidden">
                     <div className="aspect-[16/9] lg:aspect-[21/9] overflow-hidden bg-gradient-to-br from-navy/10 to-teal/10">
                       {latestNews[0].imageUrl ? (
@@ -425,13 +425,13 @@ export default function Home() {
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
+                </a>
               )}
 
               {/* Side News - Stacked */}
               <div className="flex flex-col gap-6">
                 {latestNews.slice(1, 4).map((item) => (
-                  <Link key={item.id} href={`/news/${item.id}`}>
+                  <a key={item.id} href={item.sourceUrl || `/news/${item.id}`} target={item.sourceUrl ? "_blank" : "_self"} rel="noopener noreferrer">
                     <Card className="news-card border-0 cursor-pointer">
                       <CardContent className="p-5">
                         <div className="flex gap-4">
@@ -458,7 +458,7 @@ export default function Home() {
                         </div>
                       </CardContent>
                     </Card>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>

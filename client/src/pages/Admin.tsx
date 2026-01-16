@@ -53,20 +53,20 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass">
+      {/* Navigation - White background */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
         <div className="container flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <Vote className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold gradient-text">政見</span>
+            <Vote className="w-8 h-8" style={{ color: '#A81C31' }} />
+            <span className="text-xl font-bold" style={{ color: '#A81C31' }}>政見</span>
           </Link>
           
           <div className="flex items-center gap-4">
-            <Badge variant="secondary" className="bg-primary/20 text-primary">
+            <Badge className="text-white" style={{ backgroundColor: '#A81C31' }}>
               <Shield className="w-3 h-3 mr-1" />
               管理員
             </Badge>
-            <span className="text-sm text-muted-foreground">{user.name}</span>
+            <span className="text-sm" style={{ color: '#718096' }}>{user.name}</span>
           </div>
         </div>
       </nav>
@@ -76,16 +76,16 @@ export default function Admin() {
           {/* Header */}
           <div className="mb-8">
             <Link href="/">
-              <Button variant="ghost" size="sm" className="mb-4 -ml-2">
+              <Button variant="ghost" size="sm" className="mb-4 -ml-2" style={{ color: '#0A2342' }}>
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 返回首頁
               </Button>
             </Link>
             <div className="flex items-center gap-3 mb-2">
-              <Settings className="w-10 h-10 text-primary" />
-              <h1 className="text-4xl font-bold">管理後台</h1>
+              <Settings className="w-10 h-10" style={{ color: '#A81C31' }} />
+              <h1 className="text-4xl font-bold" style={{ color: '#0A2342' }}>管理後台</h1>
             </div>
-            <p className="text-muted-foreground">
+            <p style={{ color: '#718096' }}>
               管理候選人資料、政見、新聞與留言
             </p>
           </div>

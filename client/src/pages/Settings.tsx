@@ -35,18 +35,18 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* Header - White background */}
+      <div className="border-b border-gray-100 bg-white/95 backdrop-blur shadow-sm">
         <div className="container flex items-center gap-4 h-16">
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild style={{ color: '#0A2342' }}>
             <Link href="/" className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
               返回首頁
             </Link>
           </Button>
           <div className="flex items-center gap-2">
-            <SettingsIcon className="w-5 h-5 text-primary" />
-            <h1 className="text-lg font-semibold">設定</h1>
+            <SettingsIcon className="w-5 h-5" style={{ color: '#A81C31' }} />
+            <h1 className="text-lg font-semibold" style={{ color: '#0A2342' }}>設定</h1>
           </div>
         </div>
       </div>

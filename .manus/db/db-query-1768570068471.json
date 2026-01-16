@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, title, sourceUrl, sourceName FROM news WHERE sourceUrl IS NULL OR sourceUrl = '' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, title, sourceUrl, sourceName FROM news WHERE sourceUrl IS NULL OR sourceUrl = '' LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "title": "南投縣議員温世政爭取改善中寮鄉道路排水系統",
+      "sourceUrl": "NULL",
+      "sourceName": "地方新聞網"
+    },
+    {
+      "id": "2",
+      "title": "温世政議員呼籲南投縣政府重視偏鄉醫療資源",
+      "sourceUrl": "NULL",
+      "sourceName": "南投縣議會新聞稿"
+    },
+    {
+      "id": "3",
+      "title": "南投縣長許淑華視察竹山桶頭排水改善工程 盼解決淹水問題",
+      "sourceUrl": "NULL",
+      "sourceName": "自由時報"
+    },
+    {
+      "id": "4",
+      "title": "許淑華縣長力推南投觀光 攜手業者打造全新旅遊體驗",
+      "sourceUrl": "NULL",
+      "sourceName": "聯合新聞網"
+    },
+    {
+      "id": "5",
+      "title": "南投縣府舉辦防災演練 許淑華：提升應變能力",
+      "sourceUrl": "NULL",
+      "sourceName": "中央社"
+    },
+    {
+      "id": "6",
+      "title": "何欣純力拚連任 成立後援會凝聚基層力量",
+      "sourceUrl": "NULL",
+      "sourceName": "自由時報"
+    },
+    {
+      "id": "7",
+      "title": "藍營新人挑戰何欣純 猛攻空污議題",
+      "sourceUrl": "NULL",
+      "sourceName": "聯合報"
+    },
+    {
+      "id": "8",
+      "title": "何欣純舉辦政見發表會 強調交通建設成果",
+      "sourceUrl": "NULL",
+      "sourceName": "中央社"
+    },
+    {
+      "id": "9",
+      "title": "台北市議員選舉競爭激烈，新人XXX積極拜票爭取支持",
+      "sourceUrl": "NULL",
+      "sourceName": "聯合新聞網"
+    },
+    {
+      "id": "10",
+      "title": "台北市長候選人YYY政見發表會聚焦交通議題",
+      "sourceUrl": "NULL",
+      "sourceName": "自由時報"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\tsourceUrl\tsourceName\n1\t南投縣議員温世政爭取改善中寮鄉道路排水系統\tNULL\t地方新聞網\n2\t温世政議員呼籲南投縣政府重視偏鄉醫療資源\tNULL\t南投縣議會新聞稿\n3\t南投縣長許淑華視察竹山桶頭排水改善工程 盼解決淹水問題\tNULL\t自由時報\n4\t許淑華縣長力推南投觀光 攜手業者打造全新旅遊體驗\tNULL\t聯合新聞網\n5\t南投縣府舉辦防災演練 許淑華：提升應變能力\tNULL\t中央社\n6\t何欣純力拚連任 成立後援會凝聚基層力量\tNULL\t自由時報\n7\t藍營新人挑戰何欣純 猛攻空污議題\tNULL\t聯合報\n8\t何欣純舉辦政見發表會 強調交通建設成果\tNULL\t中央社\n9\t台北市議員選舉競爭激烈，新人XXX積極拜票爭取支持\tNULL\t聯合新聞網\n10\t台北市長候選人YYY政見發表會聚焦交通議題\tNULL\t自由時報\n",
+  "stderr": "",
+  "execution_time_ms": 1510
+}

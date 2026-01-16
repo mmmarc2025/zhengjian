@@ -59,10 +59,10 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f4f8 100%)' }}>
       {/* Header */}
       <header className="p-4">
-        <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/" className="inline-flex items-center gap-2 transition-colors hover:opacity-70" style={{ color: '#0A2342' }}>
           <ArrowLeft className="w-4 h-4" />
           <span>返回首頁</span>
         </Link>
@@ -70,17 +70,17 @@ export default function Login() {
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-xl border-border/50 bg-card/80 backdrop-blur-sm">
+        <Card className="w-full max-w-md shadow-xl border-gray-200 bg-white">
           <CardHeader className="text-center space-y-4">
             {/* Logo */}
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-2xl font-bold text-primary-foreground">政</span>
+            <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #A81C31 0%, #8B1728 100%)' }}>
+              <span className="text-2xl font-bold text-white">政</span>
             </div>
             <div>
-              <CardTitle className="text-2xl font-bold">
-                登入 <span className="text-primary">政見</span> political.now
+              <CardTitle className="text-2xl font-bold" style={{ color: '#0A2342' }}>
+                登入 <span style={{ color: '#A81C31' }}>政見</span> political.now
               </CardTitle>
-              <CardDescription className="mt-2">
+              <CardDescription className="mt-2" style={{ color: '#718096' }}>
                 選擇您偏好的登入方式
               </CardDescription>
             </div>
