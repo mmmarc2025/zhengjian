@@ -962,6 +962,30 @@ function StatsAdmin() {
   });
 
   // AI 自動更新功能
+  const [searchCounty, setSearchCounty] = useState("台中市");
+  const [searchPositionType, setSearchPositionType] = useState<"mayor" | "councilor">("councilor");
+
+  // 新的自動搜尋候選人功能 (Gemini Search Grounding)
+  const quickSearch = trpc.autoUpdate.quickSearch.useMutation({
+    onSuccess: (data) => {
+      if (data.added > 0) {
+        toast.success(`已新增 ${data.added} 位候選人: ${data.candidates.map(c => c.name).join(", ")}`);
+        refetchStats();
+      } else {
+        toast.info("未找到新的候選人");
+      }
+    },
+    onError: (e) => toast.error(`搜尋失敗: ${e.message}`),
+  });
+
+  const runFullUpdate = trpc.autoUpdate.runFull.useMutation({
+    onSuccess: (data) => {
+      toast.success(`完成更新: 新增 ${data.newCandidatesAdded} 位候選人, ${data.newsUpdated} 則新聞`);
+      refetchStats();
+    },
+    onError: (e) => toast.error(`更新失敗: ${e.message}`),
+  });
+
   const batchUpdatePolicies = trpc.ai.batchUpdatePolicies.useMutation({
     onSuccess: (data) => {
       toast.success(`已為 ${data.totalCandidates} 位候選人更新政見`);
@@ -985,7 +1009,7 @@ function StatsAdmin() {
     onError: (e) => toast.error(`搜尋失敗: ${e.message}`),
   });
 
-  const isAnyLoading = batchUpdatePolicies.isPending || batchUpdateNews.isPending || searchElectionNews.isPending;
+  const isAnyLoading = batchUpdatePolicies.isPending || batchUpdateNews.isPending || searchElectionNews.isPending || quickSearch.isPending || runFullUpdate.isPending;
 
   return (
     <div>
@@ -1020,6 +1044,74 @@ function StatsAdmin() {
           </CardHeader>
         </Card>
       </div>
+
+      {/* 自動搜尋候選人區塊 */}
+      <Card className="bg-card border-border mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-chart-3" />
+            自動搜尋候選人
+          </CardTitle>
+          <CardDescription>
+            使用 Gemini Search Grounding 搜尋最新參選人資訊
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-4 mb-4">
+            <div className="flex-1 min-w-[200px]">
+              <Label>縣市</Label>
+              <Select value={searchCounty} onValueChange={setSearchCounty}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTIES.map(c => (
+                    <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1 min-w-[200px]">
+              <Label>職位</Label>
+              <Select value={searchPositionType} onValueChange={(v) => setSearchPositionType(v as any)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mayor">縣市長</SelectItem>
+                  <SelectItem value="councilor">縣市議員</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-end">
+              <Button
+                onClick={() => quickSearch.mutate({ county: searchCounty, positionType: searchPositionType })}
+                disabled={isAnyLoading}
+              >
+                {quickSearch.isPending ? (
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Zap className="w-4 h-4 mr-2" />
+                )}
+                搜尋候選人
+              </Button>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => runFullUpdate.mutate({ skipPolicies: true })}
+            disabled={isAnyLoading}
+          >
+            {runFullUpdate.isPending ? (
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <RefreshCw className="w-4 h-4 mr-2" />
+            )}
+            全面更新（六都 + 新聞）
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* AI 自動更新區塊 */}
       <Card className="bg-card border-border mb-6">

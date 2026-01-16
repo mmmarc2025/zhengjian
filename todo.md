@@ -161,3 +161,25 @@
 - [x] Fix Google OAuth callback_failed error - updated Client Secret to match new Client ID
 
 - [x] Fix Google OAuth returns correctly but user is not logged in (fixed cookie settings for production)
+
+
+## Auto-Update System - 2026/01/16
+
+- [x] Extend party field to support independent and all other parties
+- [x] Create auto-search candidates service (by county, district, position)
+- [x] Create auto-update policies service
+- [x] Create auto-update news service
+- [x] Implement smart party detection from content
+- [ ] Reference 2022 election data for context
+- [x] Create scheduled task API endpoint (every 6 hours)
+- [x] Implement Gemini Search Grounding for real-time web search
+- [x] Two-phase search strategy (search with grounding, then parse to JSON)
+- [x] Add autoUpdate router with admin-only endpoints
+- [x] Unit tests for auto-update service
+
+### Tested Candidates Found (台中市西屯區):
+- 劉芩妤 (台灣民眾黨)
+- 曾崇芳 (無黨籍)
+- 楊大鋐 (中國國民黨)
+- 黃馨慧 (中國國民黨)
+- 張廖乃綸 (中國國民黨)

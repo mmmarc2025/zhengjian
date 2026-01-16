@@ -525,3 +525,41 @@ export async function seedIssueCategories() {
     }
   }
 }
+
+
+// ============ Candidate Search/Upsert Functions ============
+export async function getCandidateByNameAndCounty(name: string, county: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  const result = await db.select().from(candidates)
+    .where(and(
+      eq(candidates.name, name),
+      eq(candidates.county, county)
+    ))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function upsertCandidate(data: InsertCandidate) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Check if candidate already exists
+  const existing = await getCandidateByNameAndCounty(data.name, data.county);
+  if (existing) {
+    // Update existing candidate
+    await updateCandidate(existing.id, data);
+    return existing.id;
+  }
+  
+  // Create new candidate
+  return createCandidate(data);
+}
+
+// ============ Auto-Update Log Functions ============
+export async function logAutoUpdate(type: string, results: unknown) {
+  // For now, just log to console. Could add a table later.
+  console.log(`[AutoUpdate] ${type}:`, JSON.stringify(results, null, 2));
+}

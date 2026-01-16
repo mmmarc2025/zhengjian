@@ -6,6 +6,9 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import * as db from "./db";
 import * as gemini from "./gemini";
+import * as autoUpdate from "./auto-update";
+import * as geminiSearch from "./gemini-search";
+import { autoUpdateRouter } from "./autoUpdateRouter";
 
 // Admin-only procedure
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -574,6 +577,7 @@ export const appRouter = router({
   category: categoryRouter,
   stats: statsRouter,
   ai: aiRouter,
+  autoUpdate: autoUpdateRouter,
 });
 
 export type AppRouter = typeof appRouter;
