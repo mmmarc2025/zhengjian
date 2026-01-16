@@ -9,8 +9,9 @@ import Home from "./pages/Home";
 import Candidates from "./pages/Candidates";
 import CandidateDetail from "./pages/CandidateDetail";
 import News from "./pages/News";
-import Compare from "./pages/Compare";
+// import Compare from "./pages/Compare"; // 暫時隱藏
 import Admin from "./pages/Admin";
+import Login from "./pages/Login";
 
 function Router() {
   return (
@@ -19,8 +20,9 @@ function Router() {
       <Route path={"/candidates"} component={Candidates} />
       <Route path={"/candidate/:id"} component={CandidateDetail} />
       <Route path={"/news"} component={News} />
-      <Route path={"/compare"} component={Compare} />
+      {/* <Route path={"/compare"} component={Compare} /> */}
       <Route path={"/admin"} component={Admin} />
+      <Route path={"/login"} component={Login} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

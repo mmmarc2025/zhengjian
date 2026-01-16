@@ -123,3 +123,13 @@
 - [x] Add "Latest News" tab to candidate detail page
 - [x] Integrate Gemini API for daily auto-search candidate news
 - [x] Update donation button with Stripe link (https://donate.stripe.com/fZu14ocP837LgY3btO4Ja0i)
+
+
+## Bug Fixes - 2026/01/16
+
+- [x] Fix homepage SEO issues (title, description, keywords)
+- [x] Create custom login page with Google and LINE OAuth support
+- [x] Implement LINE OAuth 2.0 backend routes
+- [ ] Fix news search quality - ensure real news sources with valid links
+- [x] Remove test candidates from database (deleted 9 test candidates)
+- [x] Keep "Compare Candidates" feature (restored navigation link)

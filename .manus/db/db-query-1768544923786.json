@@ -1,0 +1,64 @@
+{
+  "query": "SELECT id, name, county, party FROM candidates WHERE name LIKE '%測試%' OR name LIKE '%比較候選人%' ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, name, county, party FROM candidates WHERE name LIKE '%測試%' OR name LIKE '%比較候選人%' ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "測試候選人",
+      "county": "台北市",
+      "party": "中國國民黨"
+    },
+    {
+      "id": "2",
+      "name": "比較候選人A",
+      "county": "高雄市",
+      "party": "NULL"
+    },
+    {
+      "id": "3",
+      "name": "比較候選人B",
+      "county": "高雄市",
+      "party": "NULL"
+    },
+    {
+      "id": "4",
+      "name": "測試候選人",
+      "county": "台北市",
+      "party": "中國國民黨"
+    },
+    {
+      "id": "5",
+      "name": "比較候選人A",
+      "county": "高雄市",
+      "party": "NULL"
+    },
+    {
+      "id": "6",
+      "name": "比較候選人B",
+      "county": "高雄市",
+      "party": "NULL"
+    },
+    {
+      "id": "37",
+      "name": "測試候選人",
+      "county": "台北市",
+      "party": "中國國民黨"
+    },
+    {
+      "id": "38",
+      "name": "比較候選人A",
+      "county": "高雄市",
+      "party": "NULL"
+    },
+    {
+      "id": "39",
+      "name": "比較候選人B",
+      "county": "高雄市",
+      "party": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tcounty\tparty\n1\t測試候選人\t台北市\t中國國民黨\n2\t比較候選人A\t高雄市\tNULL\n3\t比較候選人B\t高雄市\tNULL\n4\t測試候選人\t台北市\t中國國民黨\n5\t比較候選人A\t高雄市\tNULL\n6\t比較候選人B\t高雄市\tNULL\n37\t測試候選人\t台北市\t中國國民黨\n38\t比較候選人A\t高雄市\tNULL\n39\t比較候選人B\t高雄市\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1856
+}

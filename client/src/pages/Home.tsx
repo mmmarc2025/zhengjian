@@ -11,13 +11,18 @@ import {
   ChevronRight, MapPin, Building2, Vote,
   ArrowRight, Newspaper, TrendingUp
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES } from "@shared/constants";
 import { getLineLoginUrl } from "@/const";
 
 export default function Home() {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // SEO: 動態設定頁面標題
+  useEffect(() => {
+    document.title = "政見 ZhengJian - 2026 台灣九合一選舉候選人政見查詢平台";
+  }, []);
   
   const { data: stats } = trpc.stats.get.useQuery();
   const { data: latestNews } = trpc.news.list.useQuery({ limit: 3 });
@@ -76,7 +81,7 @@ export default function Home() {
               </div>
             ) : (
               <Button variant="outline" size="sm" asChild className="bg-[#00B900] hover:bg-[#00A000] text-white border-[#00B900]">
-                <a href={getLineLoginUrl()}>LINE 登入</a>
+                <Link href="/login">LINE 登入</Link>
               </Button>
             )}
           </div>
@@ -367,27 +372,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* CTA Section */}
-      <section className="py-20">
-        <div className="container">
-          <Card className="bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30">
-            <CardContent className="p-8 md:p-12 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                比較候選人政見
-              </h2>
-              <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-                選擇同選區的候選人，並排比較他們的政見差異，做出最明智的投票決定
-              </p>
-              <Link href="/compare">
-                <Button size="lg" className="gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  開始比較
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+
 
       {/* Footer */}
       <footer className="py-12 border-t border-border">

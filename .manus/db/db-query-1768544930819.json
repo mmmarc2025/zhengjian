@@ -1,0 +1,9 @@
+{
+  "query": "DELETE FROM candidates WHERE name LIKE '%測試%' OR name LIKE '%比較候選人%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute DELETE FROM candidates WHERE name LIKE '%測試%' OR name LIKE '%比較候選人%';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1511
+}
