@@ -71,3 +71,10 @@
 - 都市規劃
 - 醫療衛生
 - 治安司法
+
+
+## Updates - 2026/01/16
+
+- [x] Update website name to "政見 politics.now"
+- [x] Search and collect 2026 announced candidates
+- [x] Import candidate data sorted by position type

@@ -138,7 +138,12 @@ export async function getCandidates(filters?: {
     query = query.where(and(...conditions)) as any;
   }
   
-  query = query.orderBy(asc(candidates.county), asc(candidates.name)) as any;
+  // Order by position type priority: mayor > councilor > township_mayor > representative > village_chief
+  query = query.orderBy(
+    sql`FIELD(${candidates.positionType}, 'mayor', 'councilor', 'township_mayor', 'representative', 'village_chief')`,
+    asc(candidates.county),
+    asc(candidates.name)
+  ) as any;
   
   if (filters?.limit) {
     query = query.limit(filters.limit) as any;

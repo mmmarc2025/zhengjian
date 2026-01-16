@@ -52,6 +52,7 @@ export const candidates = mysqlTable("candidates", {
     youtube?: string;
     line?: string;
   }>(),
+  bio: text("bio"),
   isIncumbent: boolean("isIncumbent").default(false),
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

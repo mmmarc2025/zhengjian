@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO issue_categories (name, slug, icon, description, sortOrder) VALUES\n('交通建設', 'transportation', 'Train', '交通運輸、捷運、公路、鐵路等基礎建設', 1),\n('教育文化', 'education', 'GraduationCap', '教育政策、學校、文化保存、藝術發展', 2),\n('經濟發展', 'economy', 'TrendingUp', '產業發展、就業、投資、商業環境', 3),\n('社會福利', 'social-welfare', 'Heart', '長照、托育、社會救助、弱勢照顧', 4),\n('環境保護', 'environment', 'Leaf', '環保政策、空污、水資源、綠能發展', 5),\n('都市規劃', 'urban-planning', 'Building', '都市更新、土地利用、住宅政策', 6),\n('醫療衛生', 'healthcare', 'Stethoscope', '醫療資源、公共衛生、健康政策', 7),\n('治安司法', 'public-safety', 'Shield', '警政、消防、司法、犯罪防治', 8),\n('青年政策', 'youth', 'Users', '青年就業、創業、居住、參政', 9),\n('農業發展', 'agriculture', 'Wheat', '農業政策、農民權益、農產品行銷', 10);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute INSERT INTO issue_categories (name, slug, icon, description, sortOrder) VALUES\n('交通建設', 'transportation', 'Train', '交通運輸、捷運、公路、鐵路等基礎建設', 1),\n('教育文化', 'education', 'GraduationCap', '教育政策、學校、文化保存、藝術發展', 2),\n('經濟發展', 'economy', 'TrendingUp', '產業發展、就業、投資、商業環境', 3),\n('社會福利', 'social-welfare', 'Heart', '長照、托育、社會救助、弱勢照顧', 4),\n('環境保護', 'environment', 'Leaf', '環保政策、空污、水資源、綠能發展', 5),\n('都市規劃', 'urban-planning', 'Building', '都市更新、土地利用、住宅政策', 6),\n('醫療衛生', 'healthcare', 'Stethoscope', '醫療資源、公共衛生、健康政策', 7),\n('治安司法', 'public-safety', 'Shield', '警政、消防、司法、犯罪防治', 8),\n('青年政策', 'youth', 'Users', '青年就業、創業、居住、參政', 9),\n('農業發展', 'agriculture', 'Wheat', '農業政策、農民權益、農產品行銷', 10);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1552
+}
