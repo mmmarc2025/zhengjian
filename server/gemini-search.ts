@@ -265,7 +265,7 @@ interface NewsSearchResult {
 /**
  * Extract source name from URL
  */
-function extractSourceName(url: string): string {
+export function extractSourceName(url: string): string {
   const sourceMap: Record<string, string> = {
     'udn.com': '聯合新聞網',
     'ltn.com': '自由時報',
@@ -351,6 +351,59 @@ export async function searchCandidateNewsWithSources(
     sourceUrl: source.uri,
     sourceName: extractSourceName(source.uri),
   }));
+}
+
+/**
+ * Fetch and summarize news content from a URL using Gemini
+ * This reads the actual news content and generates a summary
+ */
+export async function fetchAndSummarizeNews(newsUrl: string, newsTitle: string): Promise<{
+  title: string;
+  summary: string;
+  sourceName: string;
+}> {
+  // Use Gemini with search grounding to read the news content
+  const prompt = `請閱讀以下新聞連結的內容，並生成摘要：
+新聞連結：${newsUrl}
+新聞標題：${newsTitle}
+
+請以 JSON 格式回傳：
+{
+  "title": "新聞標題（使用原始標題或更精確的標題）",
+  "summary": "新聞摘要（100-150字，包含重點內容）"
+}
+
+注意：
+1. 摘要必須基於新聞實際內容
+2. 只回傳 JSON，不要有其他文字`;
+
+  try {
+    const { text } = await callGeminiWithSearch(prompt);
+    
+    // Extract JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const result = JSON.parse(jsonMatch[0]);
+      return {
+        title: result.title || newsTitle,
+        summary: result.summary || "",
+        sourceName: extractSourceName(newsUrl),
+      };
+    }
+    
+    return {
+      title: newsTitle,
+      summary: "",
+      sourceName: extractSourceName(newsUrl),
+    };
+  } catch (error) {
+    console.error(`Error fetching news content for ${newsUrl}:`, error);
+    return {
+      title: newsTitle,
+      summary: "",
+      sourceName: extractSourceName(newsUrl),
+    };
+  }
 }
 
 /**
@@ -501,7 +554,7 @@ export async function runAutoUpdate(options: {
         const candidates = await searchNewCandidates(county, positionType);
         newCandidates.push(...candidates);
       } catch (error) {
-        const msg = `Error searching ${county} ${positionType}: ${error}`;
+        const msg = `Error searching candidates for ${county} ${positionType}: ${error}`;
         console.error(msg);
         errors.push(msg);
       }
@@ -518,8 +571,7 @@ export async function runAutoUpdate(options: {
 
 
 /**
- * Search for candidate photo URL using Gemini with Google Search
- * Returns the most relevant official/public photo URL
+ * Search for candidate photo using Google Image Search
  */
 export async function searchCandidatePhoto(
   candidateName: string,
@@ -527,85 +579,48 @@ export async function searchCandidatePhoto(
   county: string
 ): Promise<{
   photoUrl: string | null;
+  searchQuery: string;
   source: string | null;
-  confidence: "high" | "medium" | "low";
 }> {
-  // Phase 1: Search for candidate photo with grounding
-  const searchPrompt = `請搜尋台灣政治人物「${candidateName}」（${party}，${county}）的官方照片或公開照片。
-尋找以下來源的照片：
-1. 維基百科頁面
-2. 官方 Facebook 粉絲專頁
-3. 政府官方網站
-4. 新聞媒體報導
+  // Use Gemini with search grounding to find photo URLs
+  const searchQuery = `${candidateName} ${party} ${county} 候選人 照片`;
+  const prompt = `請搜尋「${candidateName}」（${party}，${county}）的官方照片或新聞照片。
+請提供一個可用的照片網址。
 
-請提供照片的直接連結（圖片 URL，以 .jpg, .jpeg, .png, .webp 結尾）。`;
-
-  try {
-    const { text: searchResult, sources } = await callGeminiWithSearch(searchPrompt);
-    
-    // Phase 2: Parse the search result to extract photo URL
-    const parsePrompt = `根據以下搜尋結果，找出「${candidateName}」的照片連結。
-
-搜尋結果：
-${searchResult}
-
-可用來源：
-${sources.map(s => `- ${s.title}: ${s.uri}`).join('\n')}
-
-請以 JSON 格式回傳：
+只回傳 JSON 格式：
 {
-  "photoUrl": "照片的直接連結（必須是圖片 URL，以 .jpg, .jpeg, .png, .webp 結尾）或 null",
-  "source": "照片來源名稱",
-  "confidence": "high/medium/low（根據來源可靠度判斷）"
+  "photoUrl": "照片網址（如果找到）",
+  "source": "照片來源"
 }
 
-注意：
-1. 優先選擇維基百科或官方來源的照片
-2. 確保是直接的圖片連結，不是網頁連結
-3. 如果找不到可靠的照片，photoUrl 回傳 null
-4. 只回傳 JSON，不要有其他文字`;
+如果找不到照片，photoUrl 設為 null。`;
 
-    const parseResult = await callGemini(parsePrompt);
+  try {
+    const { text, sources } = await callGeminiWithSearch(prompt);
     
-    // Extract JSON from response
-    const jsonMatch = parseResult.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.log(`[GeminiSearch] Failed to parse photo JSON for ${candidateName}`);
-      return { photoUrl: null, source: null, confidence: "low" };
+    // Try to extract JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const result = JSON.parse(jsonMatch[0]);
+      return {
+        photoUrl: result.photoUrl || null,
+        searchQuery,
+        source: result.source || sources[0]?.title || null,
+      };
     }
-
-    const result = JSON.parse(jsonMatch[0]) as {
-      photoUrl: string | null;
-      source: string | null;
-      confidence: "high" | "medium" | "low";
+    
+    return {
+      photoUrl: null,
+      searchQuery,
+      source: null,
     };
-
-    // Validate photo URL format
-    if (result.photoUrl) {
-      const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-      const hasValidExtension = validExtensions.some(ext => 
-        result.photoUrl!.toLowerCase().includes(ext)
-      );
-      
-      if (!hasValidExtension) {
-        // Try to find image URL in sources
-        for (const source of sources) {
-          if (validExtensions.some(ext => source.uri.toLowerCase().includes(ext))) {
-            return {
-              photoUrl: source.uri,
-              source: source.title,
-              confidence: "medium"
-            };
-          }
-        }
-        return { photoUrl: null, source: null, confidence: "low" };
-      }
-    }
-
-    return result;
   } catch (error) {
     console.error(`Error searching photo for ${candidateName}:`, error);
-    return { photoUrl: null, source: null, confidence: "low" };
+    return {
+      photoUrl: null,
+      searchQuery,
+      source: null,
+    };
   }
 }
 
@@ -620,37 +635,45 @@ export async function batchSearchCandidatePhotos(
     county: string;
   }>
 ): Promise<Array<{
-  id: number;
-  name: string;
+  candidateId: number;
+  candidateName: string;
   photoUrl: string | null;
+  searchQuery: string;
   source: string | null;
-  confidence: "high" | "medium" | "low";
 }>> {
   const results: Array<{
-    id: number;
-    name: string;
+    candidateId: number;
+    candidateName: string;
     photoUrl: string | null;
+    searchQuery: string;
     source: string | null;
-    confidence: "high" | "medium" | "low";
   }> = [];
 
   for (const candidate of candidates) {
-    console.log(`[GeminiSearch] Searching photo for ${candidate.name}...`);
-    
-    const photoResult = await searchCandidatePhoto(
-      candidate.name,
-      candidate.party,
-      candidate.county
-    );
-
-    results.push({
-      id: candidate.id,
-      name: candidate.name,
-      ...photoResult
-    });
-
-    // Add delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const result = await searchCandidatePhoto(
+        candidate.name,
+        candidate.party,
+        candidate.county
+      );
+      results.push({
+        candidateId: candidate.id,
+        candidateName: candidate.name,
+        ...result,
+      });
+      
+      // Add delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } catch (error) {
+      console.error(`Error searching photo for ${candidate.name}:`, error);
+      results.push({
+        candidateId: candidate.id,
+        candidateName: candidate.name,
+        photoUrl: null,
+        searchQuery: `${candidate.name} ${candidate.party} ${candidate.county} 候選人 照片`,
+        source: null,
+      });
+    }
   }
 
   return results;

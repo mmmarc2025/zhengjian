@@ -301,3 +301,12 @@
 - [x] Show news date and source at the top (e.g., 2026/1/16 · 新頭殼)
 - [x] Show news title and summary in the middle
 - [x] Show news link at the bottom
+
+
+## 新聞來源和摘要修正 - 2026/01/17 (Phase 18)
+
+- [x] Fix sourceName in database (replace "vertexaisearch" with actual source name from URL)
+- [x] Create news summarization function using Gemini API (fetchAndSummarizeNews)
+- [x] Auto-generate title and summary when saving news from URL
+- [x] Update existing news with proper source names
+- [x] Export extractSourceName function for URL-based source detection

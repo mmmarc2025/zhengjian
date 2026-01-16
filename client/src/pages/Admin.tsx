@@ -1201,7 +1201,6 @@ function StatsAdmin() {
     name: string;
     photoUrl: string | null;
     source: string | null;
-    confidence: "high" | "medium" | "low";
   }>>([]);
   const [isSearchingPhotos, setIsSearchingPhotos] = useState(false);
 
@@ -1242,7 +1241,6 @@ function StatsAdmin() {
           name: result.candidateName,
           photoUrl: result.photoUrl,
           source: result.source,
-          confidence: result.confidence,
         }]);
       }
       toast.success(`已搜尋 ${Math.min(candidatesNeedPhoto.length, 10)} 位候選人的照片`);
@@ -1429,9 +1427,6 @@ function StatsAdmin() {
                         )}
                         <div>
                           <p className="font-medium">{result.name}</p>
-                          <Badge variant={result.confidence === "high" ? "default" : result.confidence === "medium" ? "secondary" : "outline"}>
-                            {result.confidence === "high" ? "高可信度" : result.confidence === "medium" ? "中可信度" : "低可信度"}
-                          </Badge>
                         </div>
                       </div>
                       {result.source && (

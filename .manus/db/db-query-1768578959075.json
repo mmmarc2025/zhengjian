@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, title, sourceName, sourceUrl FROM candidate_news LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, title, sourceName, sourceUrl FROM candidate_news LIMIT 10;",
+  "rows": [
+    {
+      "id": "120018",
+      "title": "中市議員候選人劉芩妤成立競選總部 喊出「青年參政、改變台中」",
+      "sourceName": "台中地方新聞網",
+      "sourceUrl": "NULL"
+    },
+    {
+      "id": "120019",
+      "title": "劉芩妤：青年政策不能只是口號，要落實到市民生活",
+      "sourceName": "中部時報",
+      "sourceUrl": "NULL"
+    },
+    {
+      "id": "120020",
+      "title": "蘇巧慧爭取地方建設，承諾打造新北更美好未來",
+      "sourceName": "今日新聞",
+      "sourceUrl": "NULL"
+    },
+    {
+      "id": "120021",
+      "title": "蘇巧慧質詢聚焦幼托政策，呼籲政府加強支持",
+      "sourceName": "自由時報",
+      "sourceUrl": "NULL"
+    },
+    {
+      "id": "120022",
+      "title": "蘇巧慧舉辦親子活動，與民眾同樂",
+      "sourceName": "聯合新聞網",
+      "sourceUrl": "NULL"
+    },
+    {
+      "id": "120027",
+      "title": "ctinews.com",
+      "sourceName": "vertexaisearch.cloud.google.com",
+      "sourceUrl": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHI7u3ZTguqNTaxjXrDvgJqoTB2M8-2Ff-GTGYeN6XeAawl8ysmNXmopJpV0klllcr9zrYLFtxEQ_Q5EAXLGwp_qmTJn84Dv5HSrbz4G1mi-ktHZtkH-uJr8m5q4889bvwKSZM="
+    },
+    {
+      "id": "120028",
+      "title": "more-news.tw",
+      "sourceName": "vertexaisearch.cloud.google.com",
+      "sourceUrl": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFRBmGZhuT9qrd15qNRW2TNkfZsOjptHXd6Opf-RBZtwncoUaKz7vTrUO9E8PgCugeuDZdIk9POwniRGfYpcF2UxR1VW8PgH_UQQwaHc9mBiuvXe0YW1Q=="
+    },
+    {
+      "id": "120029",
+      "title": "newtalk.tw",
+      "sourceName": "vertexaisearch.cloud.google.com",
+      "sourceUrl": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEV2bo3b9271jVAPpTCBcFMB8_Tk8ES1MVD8MAruFiheN6RHVGqMc82N2XyOqBV7XJGdI0j4ZJ_qN97sRrPPbXWHrS5_zHUeMCgQpfG-IHqyy1urDnKNwK9DbOIYdK0xTtjI3RtyMqYSsw="
+    },
+    {
+      "id": "120034",
+      "title": "line.me",
+      "sourceName": "vertexaisearch.cloud.google.com",
+      "sourceUrl": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHJOvxMeeLk33N88pIY3hkYh05VmQhcMSytYc07HJFyfgv7ePbEhl7ukUKddYFN1Tqv87OhK6rfjYPFZ45Tv33VEe6PK1yvJKoIU7RRLufhYJGEuQmJiJzzziY6PW5fFHFElEolViY="
+    },
+    {
+      "id": "120035",
+      "title": "ttv.com.tw",
+      "sourceName": "vertexaisearch.cloud.google.com",
+      "sourceUrl": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG6ngePY3TpkfKD7l7OqT1QkXdIWYVCRWcyc-Mf7OZ3cfQbOPUTb6hDW3XGjk0fjsdLlbMgR1HUX6nRJUW5B5zEmCrjpPfjdbmKlVqD7SVNtJ8uz5-Lq7ZkNKFJPGmO1wx9P_fa0Z4o"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\tsourceName\tsourceUrl\n120018\t中市議員候選人劉芩妤成立競選總部 喊出「青年參政、改變台中」\t台中地方新聞網\tNULL\n120019\t劉芩妤：青年政策不能只是口號，要落實到市民生活\t中部時報\tNULL\n120020\t蘇巧慧爭取地方建設，承諾打造新北更美好未來\t今日新聞\tNULL\n120021\t蘇巧慧質詢聚焦幼托政策，呼籲政府加強支持\t自由時報\tNULL\n120022\t蘇巧慧舉辦親子活動，與民眾同樂\t聯合新聞網\tNULL\n120027\tctinews.com\tvertexaisearch.cloud.google.com\thttps://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHI7u3ZTguqNTaxjXrDvgJqoTB2M8-2Ff-GTGYeN6XeAawl8ysmNXmopJpV0klllcr9zrYLFtxEQ_Q5EAXLGwp_qmTJn84Dv5HSrbz4G1mi-ktHZtkH-uJr8m5q4889bvwKSZM=\n120028\tmore-news.tw\tvertexaisearch.cloud.google.com\thttps://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFRBmGZhuT9qrd15qNRW2TNkfZsOjptHXd6Opf-RBZtwncoUaKz7vTrUO9E8PgCugeuDZdIk9POwniRGfYpcF2UxR1VW8PgH_UQQwaHc9mBiuvXe0YW1Q==\n120029\tnewtalk.tw\tvertexaisearch.cloud.google.com\thttps://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEV2bo3b9271jVAPpTCBcFMB8_Tk8ES1MVD8MAruFiheN6RHVGqMc82N2XyOqBV7XJGdI0j4ZJ_qN97sRrPPbXWHrS5_zHUeMCgQpfG-IHqyy1urDnKNwK9DbOIYdK0xTtjI3RtyMqYSsw=\n120034\tline.me\tvertexaisearch.cloud.google.com\thttps://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHJOvxMeeLk33N88pIY3hkYh05VmQhcMSytYc07HJFyfgv7ePbEhl7ukUKddYFN1Tqv87OhK6rfjYPFZ45Tv33VEe6PK1yvJKoIU7RRLufhYJGEuQmJiJzzziY6PW5fFHFElEolViY=\n120035\tttv.com.tw\tvertexaisearch.cloud.google.com\thttps://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG6ngePY3TpkfKD7l7OqT1QkXdIWYVCRWcyc-Mf7OZ3cfQbOPUTb6hDW3XGjk0fjsdLlbMgR1HUX6nRJUW5B5zEmCrjpPfjdbmKlVqD7SVNtJ8uz5-Lq7ZkNKFJPGmO1wx9P_fa0Z4o\n",
+  "stderr": "",
+  "execution_time_ms": 1600
+}

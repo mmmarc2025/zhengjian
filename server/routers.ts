@@ -394,6 +394,7 @@ const candidateNewsRouter = router({
   }),
 
   // Create a news item (admin only)
+  // If sourceUrl is provided but no summary, automatically fetch and generate summary using Gemini
   create: adminProcedure
     .input(z.object({
       candidateId: z.number(),
@@ -404,15 +405,43 @@ const candidateNewsRouter = router({
       imageUrl: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
+      let finalTitle = input.title;
+      let finalSummary = input.summary;
+      let finalSourceName = input.sourceName;
+      
+      // If sourceUrl is provided but no summary, auto-generate using Gemini
+      if (input.sourceUrl && !input.summary) {
+        try {
+          const result = await geminiSearch.fetchAndSummarizeNews(input.sourceUrl, input.title);
+          if (result.summary) {
+            finalSummary = result.summary;
+          }
+          if (result.title && result.title !== input.title) {
+            finalTitle = result.title;
+          }
+          if (!input.sourceName && result.sourceName) {
+            finalSourceName = result.sourceName;
+          }
+        } catch (error) {
+          console.error("Error auto-generating news summary:", error);
+          // Continue with original data if auto-generation fails
+        }
+      }
+      
+      // Extract source name from URL if not provided
+      if (!finalSourceName && input.sourceUrl) {
+        finalSourceName = geminiSearch.extractSourceName(input.sourceUrl);
+      }
+      
       const id = await db.createCandidateNews({
         candidateId: input.candidateId,
-        title: input.title,
-        summary: input.summary,
+        title: finalTitle,
+        summary: finalSummary,
         sourceUrl: input.sourceUrl,
-        sourceName: input.sourceName,
+        sourceName: finalSourceName,
         imageUrl: input.imageUrl,
       });
-      return { id };
+      return { id, title: finalTitle, summary: finalSummary, sourceName: finalSourceName };
     }),
 
   // Delete a news item (admin only)
