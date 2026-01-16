@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, name, party, county, photo_url FROM candidates WHERE photo_url IS NULL OR photo_url = '' LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, name, party, county, photo_url FROM candidates WHERE photo_url IS NULL OR photo_url = '' LIMIT 20;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'photo_url' in 'where clause'"
+  ]
+}

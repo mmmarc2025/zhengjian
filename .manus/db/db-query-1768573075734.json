@@ -1,0 +1,150 @@
+{
+  "query": "SELECT id, name, party, county, photoUrl FROM candidates WHERE photoUrl IS NULL OR photoUrl = '' LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, name, party, county, photoUrl FROM candidates WHERE photoUrl IS NULL OR photoUrl = '' LIMIT 20;",
+  "rows": [
+    {
+      "id": "30003",
+      "name": "比較候選人B",
+      "party": "NULL",
+      "county": "高雄市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30005",
+      "name": "比較候選人A",
+      "party": "NULL",
+      "county": "高雄市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30008",
+      "name": "比較候選人A",
+      "party": "NULL",
+      "county": "高雄市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30009",
+      "name": "比較候選人B",
+      "party": "NULL",
+      "county": "高雄市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30013",
+      "name": "吳宗學",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30014",
+      "name": "許育璿",
+      "party": "中國國民黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30015",
+      "name": "林筱淇",
+      "party": "台灣民眾黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30016",
+      "name": "劉芩妤",
+      "party": "台灣民眾黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30017",
+      "name": "曾咨耀",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30018",
+      "name": "張書華",
+      "party": "中國國民黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30019",
+      "name": "蔡怡萱",
+      "party": "民主進步黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30020",
+      "name": "陳映辰",
+      "party": "民主進步黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30021",
+      "name": "林鈺梅",
+      "party": "民主進步黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30022",
+      "name": "陳青松",
+      "party": "中國國民黨",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30023",
+      "name": "楊啓邦",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30024",
+      "name": "施志昌",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30025",
+      "name": "李文傑",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30026",
+      "name": "顏莉敏",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30027",
+      "name": "楊典忠",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "30028",
+      "name": "張清照",
+      "party": "待確認",
+      "county": "台中市",
+      "photoUrl": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tparty\tcounty\tphotoUrl\n30003\t比較候選人B\tNULL\t高雄市\tNULL\n30005\t比較候選人A\tNULL\t高雄市\tNULL\n30008\t比較候選人A\tNULL\t高雄市\tNULL\n30009\t比較候選人B\tNULL\t高雄市\tNULL\n30013\t吳宗學\t待確認\t台中市\tNULL\n30014\t許育璿\t中國國民黨\t台中市\tNULL\n30015\t林筱淇\t台灣民眾黨\t台中市\tNULL\n30016\t劉芩妤\t台灣民眾黨\t台中市\tNULL\n30017\t曾咨耀\t待確認\t台中市\tNULL\n30018\t張書華\t中國國民黨\t台中市\tNULL\n30019\t蔡怡萱\t民主進步黨\t台中市\tNULL\n30020\t陳映辰\t民主進步黨\t台中市\tNULL\n30021\t林鈺梅\t民主進步黨\t台中市\tNULL\n30022\t陳青松\t中國國民黨\t台中市\tNULL\n30023\t楊啓邦\t待確認\t台中市\tNULL\n30024\t施志昌\t待確認\t台中市\tNULL\n30025\t李文傑\t待確認\t台中市\tNULL\n30026\t顏莉敏\t待確認\t台中市\tNULL\n30027\t楊典忠\t待確認\t台中市\tNULL\n30028\t張清照\t待確認\t台中市\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1514
+}

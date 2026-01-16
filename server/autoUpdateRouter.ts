@@ -89,4 +89,52 @@ export const autoUpdateRouter = router({
       parties: geminiSearch.TAIWAN_PARTIES,
     };
   }),
+
+  // Search for candidate photo
+  searchPhoto: adminProcedure
+    .input(z.object({
+      candidateId: z.number(),
+      candidateName: z.string().min(1),
+      party: z.string(),
+      county: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      const result = await geminiSearch.searchCandidatePhoto(
+        input.candidateName,
+        input.party,
+        input.county
+      );
+      return {
+        candidateId: input.candidateId,
+        candidateName: input.candidateName,
+        ...result
+      };
+    }),
+
+  // Batch search photos for multiple candidates
+  batchSearchPhotos: adminProcedure
+    .input(z.object({
+      candidates: z.array(z.object({
+        id: z.number(),
+        name: z.string(),
+        party: z.string(),
+        county: z.string(),
+      })),
+    }))
+    .mutation(async ({ input }) => {
+      const results = await geminiSearch.batchSearchCandidatePhotos(input.candidates);
+      return { results };
+    }),
+
+  // Update candidate photo URL
+  updateCandidatePhoto: adminProcedure
+    .input(z.object({
+      candidateId: z.number(),
+      photoUrl: z.string().url(),
+    }))
+    .mutation(async ({ input }) => {
+      const { updateCandidate } = await import("./db");
+      await updateCandidate(input.candidateId, { photoUrl: input.photoUrl });
+      return { success: true, candidateId: input.candidateId };
+    }),
 });

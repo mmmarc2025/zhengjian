@@ -501,3 +501,143 @@ export async function runAutoUpdate(options: {
     errors,
   };
 }
+
+
+/**
+ * Search for candidate photo URL using Gemini with Google Search
+ * Returns the most relevant official/public photo URL
+ */
+export async function searchCandidatePhoto(
+  candidateName: string,
+  party: string,
+  county: string
+): Promise<{
+  photoUrl: string | null;
+  source: string | null;
+  confidence: "high" | "medium" | "low";
+}> {
+  // Phase 1: Search for candidate photo with grounding
+  const searchPrompt = `請搜尋台灣政治人物「${candidateName}」（${party}，${county}）的官方照片或公開照片。
+尋找以下來源的照片：
+1. 維基百科頁面
+2. 官方 Facebook 粉絲專頁
+3. 政府官方網站
+4. 新聞媒體報導
+
+請提供照片的直接連結（圖片 URL，以 .jpg, .jpeg, .png, .webp 結尾）。`;
+
+  try {
+    const { text: searchResult, sources } = await callGeminiWithSearch(searchPrompt);
+    
+    // Phase 2: Parse the search result to extract photo URL
+    const parsePrompt = `根據以下搜尋結果，找出「${candidateName}」的照片連結。
+
+搜尋結果：
+${searchResult}
+
+可用來源：
+${sources.map(s => `- ${s.title}: ${s.uri}`).join('\n')}
+
+請以 JSON 格式回傳：
+{
+  "photoUrl": "照片的直接連結（必須是圖片 URL，以 .jpg, .jpeg, .png, .webp 結尾）或 null",
+  "source": "照片來源名稱",
+  "confidence": "high/medium/low（根據來源可靠度判斷）"
+}
+
+注意：
+1. 優先選擇維基百科或官方來源的照片
+2. 確保是直接的圖片連結，不是網頁連結
+3. 如果找不到可靠的照片，photoUrl 回傳 null
+4. 只回傳 JSON，不要有其他文字`;
+
+    const parseResult = await callGemini(parsePrompt);
+    
+    // Extract JSON from response
+    const jsonMatch = parseResult.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.log(`[GeminiSearch] Failed to parse photo JSON for ${candidateName}`);
+      return { photoUrl: null, source: null, confidence: "low" };
+    }
+
+    const result = JSON.parse(jsonMatch[0]) as {
+      photoUrl: string | null;
+      source: string | null;
+      confidence: "high" | "medium" | "low";
+    };
+
+    // Validate photo URL format
+    if (result.photoUrl) {
+      const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+      const hasValidExtension = validExtensions.some(ext => 
+        result.photoUrl!.toLowerCase().includes(ext)
+      );
+      
+      if (!hasValidExtension) {
+        // Try to find image URL in sources
+        for (const source of sources) {
+          if (validExtensions.some(ext => source.uri.toLowerCase().includes(ext))) {
+            return {
+              photoUrl: source.uri,
+              source: source.title,
+              confidence: "medium"
+            };
+          }
+        }
+        return { photoUrl: null, source: null, confidence: "low" };
+      }
+    }
+
+    return result;
+  } catch (error) {
+    console.error(`Error searching photo for ${candidateName}:`, error);
+    return { photoUrl: null, source: null, confidence: "low" };
+  }
+}
+
+/**
+ * Batch search photos for multiple candidates
+ */
+export async function batchSearchCandidatePhotos(
+  candidates: Array<{
+    id: number;
+    name: string;
+    party: string;
+    county: string;
+  }>
+): Promise<Array<{
+  id: number;
+  name: string;
+  photoUrl: string | null;
+  source: string | null;
+  confidence: "high" | "medium" | "low";
+}>> {
+  const results: Array<{
+    id: number;
+    name: string;
+    photoUrl: string | null;
+    source: string | null;
+    confidence: "high" | "medium" | "low";
+  }> = [];
+
+  for (const candidate of candidates) {
+    console.log(`[GeminiSearch] Searching photo for ${candidate.name}...`);
+    
+    const photoResult = await searchCandidatePhoto(
+      candidate.name,
+      candidate.party,
+      candidate.county
+    );
+
+    results.push({
+      id: candidate.id,
+      name: candidate.name,
+      ...photoResult
+    });
+
+    // Add delay to avoid rate limiting
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  return results;
+}

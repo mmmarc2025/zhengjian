@@ -239,3 +239,19 @@
 ### 修復新聞連結
 - [x] Ensure news items have valid external URLs
 - [x] Add clickable links to news cards (opens in new tab if sourceUrl exists)
+
+
+## 新聞與照片修正 - 2026/01/16 (Phase 13)
+
+### 清理錯誤資料
+- [x] Delete all existing news (incorrect data)
+- [x] Remove frontend AI search news button (keep admin only)
+
+### 候選人照片
+- [x] Create backend API for photo search using Gemini Search
+- [x] Add batch photo search UI in admin panel
+- [x] Allow admin to preview and confirm photos before saving
+
+### 新聞連結
+- [ ] News should link to actual announcement of candidacy
+- [ ] Ensure news is relevant to the candidate

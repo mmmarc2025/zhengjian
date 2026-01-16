@@ -12,7 +12,7 @@ import {
   Vote, ChevronLeft, MapPin, Building2, GraduationCap, 
   Briefcase, Globe, Facebook, Instagram, Youtube,
   FileText, MessageSquare, Send, User, Calendar,
-  ExternalLink, Newspaper, RefreshCw, Clock
+  ExternalLink, Newspaper, Clock
 } from "lucide-react";
 import { useState } from "react";
 import { PARTIES, POSITION_TYPES, ISSUE_CATEGORIES } from "@shared/constants";
@@ -44,16 +44,6 @@ export default function CandidateDetail() {
     { enabled: candidateId > 0 }
   );
 
-  const searchAndAddNews = trpc.candidateNews.searchAndAdd.useMutation({
-    onSuccess: (data) => {
-      refetchNews();
-      toast.success(`已為 ${data.candidateName} 更新 ${data.addedCount} 則新聞`);
-    },
-    onError: (error) => {
-      toast.error(error.message || "更新新聞失敗");
-    },
-  });
-
   const createComment = trpc.comment.create.useMutation({
     onSuccess: () => {
       setCommentContent("");
@@ -75,14 +65,6 @@ export default function CandidateDetail() {
       candidateId,
       content: commentContent.trim(),
     });
-  };
-
-  const handleRefreshNews = () => {
-    if (user?.role !== "admin") {
-      toast.error("只有管理員可以手動更新新聞");
-      return;
-    }
-    searchAndAddNews.mutate({ candidateId });
   };
 
   if (isLoading) {
@@ -383,21 +365,6 @@ export default function CandidateDetail() {
 
                 {/* News Tab */}
                 <TabsContent value="news" className="mt-6">
-                  {/* Admin Refresh Button */}
-                  {user?.role === "admin" && (
-                    <div className="flex justify-end mb-4">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={handleRefreshNews}
-                        disabled={searchAndAddNews.isPending}
-                      >
-                        <RefreshCw className={`w-4 h-4 mr-2 ${searchAndAddNews.isPending ? 'animate-spin' : ''}`} />
-                        {searchAndAddNews.isPending ? "搜尋中..." : "AI 搜尋最新新聞"}
-                      </Button>
-                    </div>
-                  )}
-
                   {isLoadingNews ? (
                     <div className="flex items-center justify-center py-12">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -461,19 +428,9 @@ export default function CandidateDetail() {
                       <CardContent className="p-12 text-center">
                         <Newspaper className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                         <h3 className="text-lg font-medium mb-2">尚無相關新聞</h3>
-                        <p className="text-muted-foreground mb-4">
+                        <p className="text-muted-foreground">
                           目前沒有該候選人的最新新聞
                         </p>
-                        {user?.role === "admin" && (
-                          <Button 
-                            variant="outline"
-                            onClick={handleRefreshNews}
-                            disabled={searchAndAddNews.isPending}
-                          >
-                            <RefreshCw className={`w-4 h-4 mr-2 ${searchAndAddNews.isPending ? 'animate-spin' : ''}`} />
-                            {searchAndAddNews.isPending ? "搜尋中..." : "AI 搜尋新聞"}
-                          </Button>
-                        )}
                       </CardContent>
                     </Card>
                   )}

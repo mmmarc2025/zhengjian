@@ -15,7 +15,7 @@ import { Link, useLocation } from "wouter";
 import { 
   Vote, ChevronLeft, Users, FileText, Newspaper, MessageSquare,
   Plus, Pencil, Trash2, Check, X, Shield, BarChart3, Settings,
-  Sparkles, RefreshCw, Zap
+  Sparkles, RefreshCw, Zap, Camera, ImageIcon, ExternalLink
 } from "lucide-react";
 import { useState } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES, ISSUE_CATEGORIES } from "@shared/constants";
@@ -1009,7 +1009,71 @@ function StatsAdmin() {
     onError: (e) => toast.error(`搜尋失敗: ${e.message}`),
   });
 
-  const isAnyLoading = batchUpdatePolicies.isPending || batchUpdateNews.isPending || searchElectionNews.isPending || quickSearch.isPending || runFullUpdate.isPending;
+  // 照片搜尋功能
+  const [photoSearchCounty, setPhotoSearchCounty] = useState("台北市");
+  const [photoSearchResults, setPhotoSearchResults] = useState<Array<{
+    id: number;
+    name: string;
+    photoUrl: string | null;
+    source: string | null;
+    confidence: "high" | "medium" | "low";
+  }>>([]);
+  const [isSearchingPhotos, setIsSearchingPhotos] = useState(false);
+
+  const { data: candidatesWithoutPhoto } = trpc.candidate.list.useQuery(
+    { county: photoSearchCounty, limit: 100 },
+    { enabled: !!photoSearchCounty }
+  );
+
+  const searchPhoto = trpc.autoUpdate.searchPhoto.useMutation();
+  const updateCandidatePhoto = trpc.autoUpdate.updateCandidatePhoto.useMutation({
+    onSuccess: () => {
+      toast.success("照片已更新");
+      refetchStats();
+    },
+    onError: (e) => toast.error(`更新失敗: ${e.message}`),
+  });
+
+  const handleBatchSearchPhotos = async () => {
+    const candidatesNeedPhoto = (candidatesWithoutPhoto || []).filter((c: any) => !c.photoUrl);
+    if (candidatesNeedPhoto.length === 0) {
+      toast.info("該縣市所有候選人都已有照片");
+      return;
+    }
+
+    setIsSearchingPhotos(true);
+    setPhotoSearchResults([]);
+    
+    try {
+      for (const candidate of candidatesNeedPhoto.slice(0, 10)) {
+        const result = await searchPhoto.mutateAsync({
+          candidateId: candidate.id,
+          candidateName: candidate.name,
+          party: candidate.party || "無黨籍",
+          county: candidate.county,
+        });
+        setPhotoSearchResults(prev => [...prev, {
+          id: result.candidateId,
+          name: result.candidateName,
+          photoUrl: result.photoUrl,
+          source: result.source,
+          confidence: result.confidence,
+        }]);
+      }
+      toast.success(`已搜尋 ${Math.min(candidatesNeedPhoto.length, 10)} 位候選人的照片`);
+    } catch (error) {
+      toast.error("搜尋照片失敗");
+    } finally {
+      setIsSearchingPhotos(false);
+    }
+  };
+
+  const handleConfirmPhoto = (candidateId: number, photoUrl: string) => {
+    updateCandidatePhoto.mutate({ candidateId, photoUrl });
+    setPhotoSearchResults(prev => prev.filter(r => r.id !== candidateId));
+  };
+
+  const isAnyLoading = batchUpdatePolicies.isPending || batchUpdateNews.isPending || searchElectionNews.isPending || quickSearch.isPending || runFullUpdate.isPending || isSearchingPhotos;
 
   return (
     <div>
@@ -1110,6 +1174,111 @@ function StatsAdmin() {
             )}
             全面更新（六都 + 新聞）
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* 候選人照片搜尋區塊 */}
+      <Card className="bg-card border-border mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Camera className="w-5 h-5 text-chart-2" />
+            候選人照片搜尋
+          </CardTitle>
+          <CardDescription>
+            為沒有照片的候選人搜尋公開照片
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-4 mb-4">
+            <div className="flex-1 min-w-[200px]">
+              <Label>縣市</Label>
+              <Select value={photoSearchCounty} onValueChange={setPhotoSearchCounty}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTIES.map(c => (
+                    <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-end">
+              <Button
+                onClick={handleBatchSearchPhotos}
+                disabled={isAnyLoading}
+              >
+                {isSearchingPhotos ? (
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Camera className="w-4 h-4 mr-2" />
+                )}
+                搜尋照片（最多 10 位）
+              </Button>
+            </div>
+          </div>
+
+          {/* 照片搜尋結果 */}
+          {photoSearchResults.length > 0 && (
+            <div className="space-y-4 mt-4">
+              <h4 className="font-medium">搜尋結果（點擊確認儲存）</h4>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {photoSearchResults.map(result => (
+                  <Card key={result.id} className="bg-muted/50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        {result.photoUrl ? (
+                          <img 
+                            src={result.photoUrl} 
+                            alt={result.name}
+                            className="w-16 h-16 rounded-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "";
+                              (e.target as HTMLImageElement).style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                            <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium">{result.name}</p>
+                          <Badge variant={result.confidence === "high" ? "default" : result.confidence === "medium" ? "secondary" : "outline"}>
+                            {result.confidence === "high" ? "高可信度" : result.confidence === "medium" ? "中可信度" : "低可信度"}
+                          </Badge>
+                        </div>
+                      </div>
+                      {result.source && (
+                        <p className="text-xs text-muted-foreground mb-2">來源: {result.source}</p>
+                      )}
+                      {result.photoUrl ? (
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            onClick={() => handleConfirmPhoto(result.id, result.photoUrl!)}
+                            disabled={updateCandidatePhoto.isPending}
+                          >
+                            <Check className="w-4 h-4 mr-1" />
+                            確認儲存
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => window.open(result.photoUrl!, "_blank")}
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">未找到照片</p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
