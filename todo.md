@@ -133,3 +133,14 @@
 - [ ] Fix news search quality - ensure real news sources with valid links
 - [x] Remove test candidates from database (deleted 9 test candidates)
 - [x] Keep "Compare Candidates" feature (restored navigation link)
+
+## Updates - 2026/01/16 (Phase 7)
+
+- [x] Implement standalone Google OAuth 2.0 (not using Manus interface)
+- [x] Add logout button to navigation (dropdown menu)
+- [x] Add settings button and page
+- [x] Fix LINE login Callback URL for production site
+
+### Required Callback URL Settings:
+- Google: `https://political.now/api/auth/google/callback`
+- LINE: `https://political.now/api/auth/line/callback`

@@ -9,8 +9,15 @@ import { Link } from "wouter";
 import { 
   Search, Users, FileText, MessageSquare, 
   ChevronRight, MapPin, Building2, Vote,
-  ArrowRight, Newspaper, TrendingUp
+  ArrowRight, Newspaper, TrendingUp, LogOut, Settings
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES } from "@shared/constants";
 import { getLineLoginUrl } from "@/const";
@@ -69,19 +76,43 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <ThemeSwitcher />
             {user ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground hidden sm:inline">
-                  {user.name || "使用者"}
-                </span>
-                {user.role === "admin" && (
-                  <Badge variant="secondary" className="bg-primary/20 text-primary">
-                    管理員
-                  </Badge>
-                )}
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <span className="text-sm hidden sm:inline">
+                      {user.name || "使用者"}
+                    </span>
+                    {user.role === "admin" && (
+                      <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
+                        管理員
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="flex items-center gap-2 cursor-pointer">
+                      <Settings className="w-4 h-4" />
+                      設定
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
+                    onClick={() => {
+                      // 登出處理
+                      fetch('/api/trpc/auth.logout', { method: 'POST' })
+                        .then(() => window.location.href = '/');
+                    }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    登出
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button variant="outline" size="sm" asChild className="bg-[#00B900] hover:bg-[#00A000] text-white border-[#00B900]">
-                <Link href="/login">LINE 登入</Link>
+                <Link href="/login">登入</Link>
               </Button>
             )}
           </div>

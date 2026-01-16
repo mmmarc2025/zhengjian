@@ -12,6 +12,7 @@ import News from "./pages/News";
 // import Compare from "./pages/Compare"; // 暫時隱藏
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
+import Settings from "./pages/Settings";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       {/* <Route path={"/compare"} component={Compare} /> */}
       <Route path={"/admin"} component={Admin} />
       <Route path={"/login"} component={Login} />
+      <Route path={"/settings"} component={Settings} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

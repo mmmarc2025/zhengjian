@@ -165,24 +165,4 @@ export function registerLineOAuthRoutes(app: Express) {
     }
   });
 
-  // Google 登入（透過 Manus OAuth）
-  app.get("/api/auth/google", (req: Request, res: Response) => {
-    const origin = `${req.protocol}://${req.get("host")}`;
-    const returnUrl = getQueryParam(req, "returnUrl") || "/";
-    const redirectUri = `${origin}/api/oauth/callback`;
-    const state = Buffer.from(redirectUri).toString("base64");
-    
-    const oauthPortalUrl = process.env.VITE_OAUTH_PORTAL_URL || "https://manus.im";
-    const appId = ENV.appId;
-    
-    const url = new URL(`${oauthPortalUrl}/app-auth`);
-    url.searchParams.set("appId", appId);
-    url.searchParams.set("redirectUri", redirectUri);
-    url.searchParams.set("state", state);
-    url.searchParams.set("type", "signIn");
-    url.searchParams.set("provider", "google");
-    
-    console.log("[Google OAuth] Redirecting to:", url.toString());
-    res.redirect(302, url.toString());
-  });
 }
