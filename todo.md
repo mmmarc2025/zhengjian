@@ -189,3 +189,23 @@
 
 - [x] Fix Google OAuth login not working (wrong COOKIE_NAME: was "session", should be "app_session_id")
 - [ ] Fix admin login not working
+
+
+## UI/UX 大改版 - 2026/01/16 (Phase 10)
+
+### 管理後台修復
+- [x] Fix auto-search candidates button not showing in admin panel (already implemented)
+- [x] Execute candidate search for 台中市西屯區 and update database (7 candidates added)
+
+### 前端視覺優化 (改用深海軍藍 + 朱紅配色)
+- [x] Color palette: Deep Navy Blue (#0A2342) + Crimson Red (#A81C31) accent
+- [x] Typography: Montserrat for headings, Inter for body
+- [x] Hero section with navy gradient background
+- [x] Card-based article layout
+- [x] Improved white space and breathing room
+- [x] Modern navbar with navy background
+- [ ] Reading progress bar for long articles
+- [ ] Visual "Related Articles" section
+- [x] Category tags with party colors
+- [x] New light-navy theme added to ThemeProvider
+- [x] Updated ThemeSwitcher component with Anchor icon

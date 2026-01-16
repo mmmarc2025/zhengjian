@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO candidates (name, party, county, district, positionType, createdAt, updatedAt)\nVALUES \n('劉芩妤', '台灣民眾黨', '台中市', '西屯區', 'councilor', NOW(), NOW()),\n('林筱淇', '台灣民眾黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('曾咨耀', '民主進步黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('吳宗學', '中國國民黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('許育璿', '中國國民黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('張書華', '中國國民黨', '台中市', '太平區', 'councilor', NOW(), NOW()),\n('蔡怡萱', '民主進步黨', '台中市', '豐原區', 'councilor', NOW(), NOW())\nON DUPLICATE KEY UPDATE updatedAt = NOW();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute INSERT INTO candidates (name, party, county, district, positionType, createdAt, updatedAt)\nVALUES \n('劉芩妤', '台灣民眾黨', '台中市', '西屯區', 'councilor', NOW(), NOW()),\n('林筱淇', '台灣民眾黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('曾咨耀', '民主進步黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('吳宗學', '中國國民黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('許育璿', '中國國民黨', '台中市', '北屯區', 'councilor', NOW(), NOW()),\n('張書華', '中國國民黨', '台中市', '太平區', 'councilor', NOW(), NOW()),\n('蔡怡萱', '民主進步黨', '台中市', '豐原區', 'councilor', NOW(), NOW())\nON DUPLICATE KEY UPDATE updatedAt = NOW();",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1497
+}

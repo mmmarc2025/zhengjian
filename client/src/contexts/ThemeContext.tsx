@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 // 支援的風格類型
-export type StyleTheme = "dark-gradient" | "light-contour";
+export type StyleTheme = "dark-gradient" | "light-contour" | "light-navy";
 
 interface ThemeContextType {
   styleTheme: StyleTheme;
@@ -19,7 +19,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "light-contour",
+  defaultTheme = "light-navy",
   switchable = true,
 }: ThemeProviderProps) {
   const [styleTheme, setStyleThemeState] = useState<StyleTheme>(() => {
@@ -34,7 +34,7 @@ export function ThemeProvider({
     const root = document.documentElement;
     
     // 移除所有風格類別
-    root.classList.remove("dark-gradient", "light-contour", "dark");
+    root.classList.remove("dark-gradient", "light-contour", "light-navy", "dark");
     
     // 添加當前風格類別
     root.classList.add(styleTheme);
@@ -72,4 +72,5 @@ export function useTheme() {
 export const STYLE_THEME_NAMES: Record<StyleTheme, string> = {
   "dark-gradient": "深色漸層",
   "light-contour": "白色等高線",
+  "light-navy": "海軍藍明亮",
 };

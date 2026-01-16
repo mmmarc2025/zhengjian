@@ -1,0 +1,80 @@
+{
+  "query": "SELECT id, name, party, county, district FROM candidates WHERE county = '台中市' ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, name, party, county, district FROM candidates WHERE county = '台中市' ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "30092",
+      "name": "蔡怡萱",
+      "party": "民主進步黨",
+      "county": "台中市",
+      "district": "豐原區"
+    },
+    {
+      "id": "30088",
+      "name": "曾咨耀",
+      "party": "民主進步黨",
+      "county": "台中市",
+      "district": "北屯區"
+    },
+    {
+      "id": "30091",
+      "name": "張書華",
+      "party": "中國國民黨",
+      "county": "台中市",
+      "district": "太平區"
+    },
+    {
+      "id": "30086",
+      "name": "劉芩妤",
+      "party": "台灣民眾黨",
+      "county": "台中市",
+      "district": "西屯區"
+    },
+    {
+      "id": "30087",
+      "name": "林筱淇",
+      "party": "台灣民眾黨",
+      "county": "台中市",
+      "district": "北屯區"
+    },
+    {
+      "id": "30090",
+      "name": "許育璿",
+      "party": "中國國民黨",
+      "county": "台中市",
+      "district": "北屯區"
+    },
+    {
+      "id": "30089",
+      "name": "吳宗學",
+      "party": "中國國民黨",
+      "county": "台中市",
+      "district": "北屯區"
+    },
+    {
+      "id": "30085",
+      "name": "朱元宏",
+      "party": "待確認",
+      "county": "台中市",
+      "district": "第十七選區（山地原住民）"
+    },
+    {
+      "id": "30082",
+      "name": "蔡成圭",
+      "party": "待確認",
+      "county": "台中市",
+      "district": "第十四選區（東勢區、石岡區、新社區、和平區）"
+    },
+    {
+      "id": "30083",
+      "name": "吳建德",
+      "party": "待確認",
+      "county": "台中市",
+      "district": "第十五選區（平地原住民）"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tparty\tcounty\tdistrict\n30092\t蔡怡萱\t民主進步黨\t台中市\t豐原區\n30088\t曾咨耀\t民主進步黨\t台中市\t北屯區\n30091\t張書華\t中國國民黨\t台中市\t太平區\n30086\t劉芩妤\t台灣民眾黨\t台中市\t西屯區\n30087\t林筱淇\t台灣民眾黨\t台中市\t北屯區\n30090\t許育璿\t中國國民黨\t台中市\t北屯區\n30089\t吳宗學\t中國國民黨\t台中市\t北屯區\n30085\t朱元宏\t待確認\t台中市\t第十七選區（山地原住民）\n30082\t蔡成圭\t待確認\t台中市\t第十四選區（東勢區、石岡區、新社區、和平區）\n30083\t吳建德\t待確認\t台中市\t第十五選區（平地原住民）\n",
+  "stderr": "",
+  "execution_time_ms": 1640
+}

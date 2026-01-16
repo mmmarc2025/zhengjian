@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO candidates (name, party, county, district, positionType, summary, createdAt, updatedAt)\nVALUES \n('劉芩妤', '台灣民眾黨', '台中市', '西屯區', 'councilor', '民眾黨節目主持人，宣布參選台中市議員', NOW(), NOW()),\n('林筱淇', '台灣民眾黨', '台中市', '北屯區', 'councilor', '前台中市府觀旅局長，有「大學姐」之稱', NOW(), NOW()),\n('曾咨耀', '民主進步黨', '台中市', '北屯區', 'councilor', '曾朝榮之子，傳出有意參選', NOW(), NOW()),\n('吳宗學', '中國國民黨', '台中市', '北屯區', 'councilor', '市府體育局專員，獲盧秀燕與黃健豪支持', NOW(), NOW()),\n('許育璿', '中國國民黨', '台中市', '北屯區', 'councilor', '江啟臣秘書、台中市黨部發言人', NOW(), NOW()),\n('張書華', '中國國民黨', '台中市', '太平區', 'councilor', '台中市黨部副主委', NOW(), NOW()),\n('蔡怡萱', '民主進步黨', '台中市', '豐原區', 'councilor', '蔡森揚之女，上屆以無黨籍身分參選', NOW(), NOW())\nON DUPLICATE KEY UPDATE updatedAt = NOW();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute INSERT INTO candidates (name, party, county, district, positionType, summary, createdAt, updatedAt)\nVALUES \n('劉芩妤', '台灣民眾黨', '台中市', '西屯區', 'councilor', '民眾黨節目主持人，宣布參選台中市議員', NOW(), NOW()),\n('林筱淇', '台灣民眾黨', '台中市', '北屯區', 'councilor', '前台中市府觀旅局長，有「大學姐」之稱', NOW(), NOW()),\n('曾咨耀', '民主進步黨', '台中市', '北屯區', 'councilor', '曾朝榮之子，傳出有意參選', NOW(), NOW()),\n('吳宗學', '中國國民黨', '台中市', '北屯區', 'councilor', '市府體育局專員，獲盧秀燕與黃健豪支持', NOW(), NOW()),\n('許育璿', '中國國民黨', '台中市', '北屯區', 'councilor', '江啟臣秘書、台中市黨部發言人', NOW(), NOW()),\n('張書華', '中國國民黨', '台中市', '太平區', 'councilor', '台中市黨部副主委', NOW(), NOW()),\n('蔡怡萱', '民主進步黨', '台中市', '豐原區', 'councilor', '蔡森揚之女，上屆以無黨籍身分參選', NOW(), NOW())\nON DUPLICATE KEY UPDATE updatedAt = NOW();",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'summary' in 'field list'"
+  ]
+}

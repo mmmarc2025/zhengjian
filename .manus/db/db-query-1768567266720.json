@@ -1,0 +1,32 @@
+{
+  "query": "SELECT * FROM users WHERE email = 'mm@doce.cc';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT * FROM users WHERE email = 'mm@doce.cc';",
+  "rows": [
+    {
+      "id": "1",
+      "openId": "XhfMPCUNaQS5Cxt8FVDH6o",
+      "name": "ll ll",
+      "email": "mm@doce.cc",
+      "loginMethod": "google",
+      "role": "admin",
+      "createdAt": "2026-01-16 02:36:11",
+      "updatedAt": "2026-01-16 12:40:35",
+      "lastSignedIn": "2026-01-16 12:40:36"
+    },
+    {
+      "id": "300056",
+      "openId": "google_117441476860334324123",
+      "name": "kk kk",
+      "email": "mm@doce.cc",
+      "loginMethod": "google",
+      "role": "user",
+      "createdAt": "2026-01-16 12:24:15",
+      "updatedAt": "2026-01-16 12:40:25",
+      "lastSignedIn": "2026-01-16 12:40:26"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\tloginMethod\trole\tcreatedAt\tupdatedAt\tlastSignedIn\n1\tXhfMPCUNaQS5Cxt8FVDH6o\tll ll\tmm@doce.cc\tgoogle\tadmin\t2026-01-16 02:36:11\t2026-01-16 12:40:35\t2026-01-16 12:40:36\n300056\tgoogle_117441476860334324123\tkk kk\tmm@doce.cc\tgoogle\tuser\t2026-01-16 12:24:15\t2026-01-16 12:40:25\t2026-01-16 12:40:26\n",
+  "stderr": "",
+  "execution_time_ms": 1501
+}

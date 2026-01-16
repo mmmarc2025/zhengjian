@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
 import { 
   Search, Users, FileText, MessageSquare, 
   ChevronRight, MapPin, Building2, Vote,
-  ArrowRight, Newspaper, TrendingUp, LogOut, Settings
+  ArrowRight, Newspaper, TrendingUp, LogOut, Settings,
+  Clock, ExternalLink
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES } from "@shared/constants";
-import { getLineLoginUrl } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Home() {
@@ -27,13 +26,12 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const logoutMutation = trpc.auth.logout.useMutation();
   
-  // SEO: 動態設定頁面標題
   useEffect(() => {
-    document.title = "政見 ZhengJian - 2026 台灣九合一選舉候選人政見查詢平台";
+    document.title = "政見 political.now - 2026 台灣九合一選舉候選人政見查詢平台";
   }, []);
   
   const { data: stats } = trpc.stats.get.useQuery();
-  const { data: latestNews } = trpc.news.list.useQuery({ limit: 3 });
+  const { data: latestNews } = trpc.news.list.useQuery({ limit: 4 });
   const { data: featuredCandidates } = trpc.candidate.list.useQuery({ 
     positionType: "mayor",
     limit: 6 
@@ -48,43 +46,53 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass">
+      {/* Modern Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 text-white" style={{ backgroundColor: '#0A2342' }}>
         <div className="container flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
-            <Vote className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold gradient-text">政見</span>
-            <span className="text-sm text-muted-foreground ml-1">political.now</span>
+          <Link href="/" className="flex items-center gap-3">
+            <Vote className="w-7 h-7 text-crimson" />
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-bold text-crimson">政見</span>
+              <span className="text-sm text-white/80">political.now</span>
+            </div>
           </Link>
           
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/candidates" className="text-muted-foreground hover:text-foreground transition-colors">
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="/candidates" className="text-white/80 hover:text-crimson transition-colors font-medium">
               候選人
             </Link>
-            <Link href="/news" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/news" className="text-white/80 hover:text-crimson transition-colors font-medium">
               最新動態
             </Link>
-            <Link href="/compare" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/compare" className="text-white/80 hover:text-crimson transition-colors font-medium">
               政見比較
             </Link>
             {user?.role === "admin" && (
-              <Link href="/admin" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/admin" className="text-white/80 hover:text-crimson transition-colors font-medium">
                 管理後台
               </Link>
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <ThemeSwitcher />
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-white/80 hover:text-crimson hover:bg-white/10"
+              onClick={() => document.getElementById('search-input')?.focus()}
+            >
+              <Search className="w-5 h-5" />
+            </Button>
+            
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 flex items-center gap-2">
                     <span className="text-sm hidden sm:inline">
                       {user.name || "使用者"}
                     </span>
                     {user.role === "admin" && (
-                      <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
+                      <Badge className="bg-crimson text-navy text-xs">
                         管理員
                       </Badge>
                     )}
@@ -114,7 +122,7 @@ export default function Home() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button variant="outline" size="sm" asChild className="bg-[#00B900] hover:bg-[#00A000] text-white border-[#00B900]">
+              <Button className="btn-accent" size="sm" asChild>
                 <Link href="/login">登入</Link>
               </Button>
             )}
@@ -122,138 +130,135 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-16 min-h-[80vh] flex items-center justify-center overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-accent/10" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
-        
-        {/* Grid pattern overlay */}
-        <div 
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "50px 50px"
-          }}
-        />
+      {/* Hero Section - Deep Navy with Crimson accents */}
+      <section className="pt-16 min-h-[85vh] flex items-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0A2342 0%, #061529 100%)' }}>
+        <div className="container relative z-10 py-20">
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <Badge className="mb-8 bg-crimson/20 text-crimson border-crimson/30 px-4 py-2 text-sm font-semibold">
+              2026 九合一地方選舉
+            </Badge>
+            
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 tracking-tight leading-none">
+              <span className="text-crimson">政見</span>
+              <span className="text-white/90"> political.now</span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
+              全台灣最完整的候選人政見資料庫
+              <br />
+              <span className="text-white font-semibold">查詢、比較、參與討論</span>
+            </p>
 
-        <div className="container relative z-10 text-center">
-          <Badge variant="secondary" className="mb-6 bg-primary/20 text-primary border-primary/30">
-            2026 九合一地方選舉
-          </Badge>
-          
-          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
-            <span className="gradient-text">政見</span>
-            <span className="text-foreground"> political.now</span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            全台灣最完整的候選人政見資料庫
-            <br />
-            <span className="text-foreground font-medium">查詢、比較、參與討論</span>
-          </p>
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-16">
+              <div className="relative group">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  id="search-input"
+                  type="text"
+                  placeholder="搜尋候選人姓名、選區或政黨..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-14 pr-32 h-16 text-lg bg-white text-foreground rounded-full border-0 shadow-xl focus:ring-4 focus:ring-teal/30"
+                />
+                <Button 
+                  type="submit" 
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full h-12 px-8 btn-accent"
+                >
+                  搜尋
+                </Button>
+              </div>
+            </form>
 
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="max-w-xl mx-auto mb-12">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="搜尋候選人姓名、選區或政黨..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 h-14 text-lg bg-card border-border rounded-full"
-              />
-              <Button 
-                type="submit" 
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
-              >
-                搜尋
-              </Button>
-            </div>
-          </form>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary">
-                {stats?.totalCandidates || 0}
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-8 max-w-xl mx-auto">
+              <div className="text-center">
+                <div className="text-4xl md:text-5xl font-bold text-crimson mb-2">
+                  {stats?.totalCandidates || 0}
+                </div>
+                <div className="text-sm text-white/60 uppercase tracking-wide">候選人</div>
               </div>
-              <div className="text-sm text-muted-foreground">候選人</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-accent">
-                {stats?.totalPolicies || 0}
+              <div className="text-center border-x border-white/20">
+                <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  {stats?.totalPolicies || 0}
+                </div>
+                <div className="text-sm text-white/60 uppercase tracking-wide">政見</div>
               </div>
-              <div className="text-sm text-muted-foreground">政見</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-chart-3">
-                {stats?.totalComments || 0}
+              <div className="text-center">
+                <div className="text-4xl md:text-5xl font-bold text-crimson mb-2">
+                  {stats?.totalComments || 0}
+                </div>
+                <div className="text-sm text-white/60 uppercase tracking-wide">討論</div>
               </div>
-              <div className="text-sm text-muted-foreground">討論</div>
             </div>
           </div>
         </div>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronRight className="w-6 h-6 text-muted-foreground rotate-90" />
+          <ChevronRight className="w-8 h-8 text-crimson rotate-90" />
         </div>
       </section>
 
       {/* Quick Access Section */}
-      <section className="py-20 bg-card/50">
+      <section className="py-24 bg-background">
         <div className="container">
-          <h2 className="text-3xl font-bold mb-8 text-center">快速查詢</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-4">快速查詢</h2>
+            <p className="text-lg text-muted-foreground">選擇您感興趣的方式開始探索</p>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* By Region */}
-            <Card className="bg-card border-border hover:border-primary/50 transition-colors">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  依縣市查詢
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {COUNTIES.slice(0, 8).map((county) => (
+            <Card className="news-card group border-0">
+              <CardContent className="p-8">
+                <div className="w-14 h-14 rounded-2xl bg-navy/10 flex items-center justify-center mb-6 group-hover:bg-navy/20 transition-colors">
+                  <MapPin className="w-7 h-7 text-navy" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">依縣市查詢</h3>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {COUNTIES.slice(0, 6).map((county) => (
                     <Link key={county.id} href={`/candidates?county=${county.name}`}>
                       <Badge 
                         variant="outline" 
-                        className="cursor-pointer hover:bg-primary/20 hover:border-primary transition-colors"
+                        className="cursor-pointer hover:bg-navy hover:text-white hover:border-navy transition-all"
                       >
                         {county.name}
                       </Badge>
                     </Link>
                   ))}
-                  <Link href="/candidates">
-                    <Badge variant="secondary" className="cursor-pointer">
-                      更多 <ArrowRight className="w-3 h-3 ml-1" />
-                    </Badge>
-                  </Link>
                 </div>
+                <Link href="/candidates" className="inline-flex items-center text-navy font-semibold hover:text-crimson transition-colors">
+                  查看全部縣市 <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
               </CardContent>
             </Card>
 
             {/* By Party */}
-            <Card className="bg-card border-border hover:border-primary/50 transition-colors">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-accent" />
-                  依政黨查詢
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {PARTIES.slice(0, 6).map((party) => (
+            <Card className="news-card group border-0">
+              <CardContent className="p-8">
+                <div className="w-14 h-14 rounded-2xl bg-crimson/10 flex items-center justify-center mb-6 group-hover:bg-crimson/20 transition-colors">
+                  <Building2 className="w-7 h-7 text-crimson" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">依政黨查詢</h3>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {PARTIES.slice(0, 5).map((party) => (
                     <Link key={party.id} href={`/candidates?party=${party.name}`}>
                       <Badge 
                         variant="outline" 
-                        className="cursor-pointer hover:bg-accent/20 hover:border-accent transition-colors"
-                        style={{ borderColor: party.color + "50" }}
+                        className="cursor-pointer hover:text-white transition-all"
+                        style={{ 
+                          borderColor: party.color,
+                          '--hover-bg': party.color 
+                        } as React.CSSProperties}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = party.color;
+                          e.currentTarget.style.color = 'white';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '';
+                        }}
                       >
                         <span 
                           className="w-2 h-2 rounded-full mr-1.5"
@@ -264,56 +269,63 @@ export default function Home() {
                     </Link>
                   ))}
                 </div>
+                <Link href="/candidates" className="inline-flex items-center text-crimson font-semibolhover:text-crimsonvy transition-colors">
+                  查看全部政黨 <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
               </CardContent>
             </Card>
 
             {/* By Position */}
-            <Card className="bg-card border-border hover:border-primary/50 transition-colors">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-chart-3" />
-                  依職位查詢
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {POSITION_TYPES.map((position) => (
+            <Card className="news-card group border-0">
+              <CardContent className="p-8">
+                <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center mb-6 group-hover:bg-destructive/20 transition-colors">
+                  <Users className="w-7 h-7 text-destructive" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">依職位查詢</h3>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {POSITION_TYPES.slice(0, 4).map((position) => (
                     <Link key={position.id} href={`/candidates?position=${position.id}`}>
                       <Badge 
                         variant="outline" 
-                        className="cursor-pointer hover:bg-chart-3/20 hover:border-chart-3 transition-colors"
+                        className="cursor-pointer hover:bg-destructive hover:text-white hover:border-destructive transition-all"
                       >
                         {position.name}
                       </Badge>
                     </Link>
                   ))}
                 </div>
+                <Link href="/candidates" className="inline-flex items-center text-destructive font-semibold hover:text-navy transition-colors">
+                  查看全部職位 <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Featured Candidates */}
+      {/* Featured Candidates - Asymmetric Grid */}
       {featuredCandidates && featuredCandidates.length > 0 && (
-        <section className="py-20">
+        <section className="py-24 bg-secondary/30">
           <div className="container">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold">縣市長候選人</h2>
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <Badge className="mb-4 bg-navy/10 text-navy">焦點人物</Badge>
+                <h2 className="text-4xl font-bold text-foreground">縣市長候選人</h2>
+              </div>
               <Link href="/candidates?position=mayor">
-                <Button variant="ghost" className="gap-2">
+                <Button variant="outline" className="gap-2 border-navy text-navy hover:bg-navy hover:text-white">
                   查看全部 <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredCandidates.map((candidate) => (
+              {featuredCandidates.map((candidate, index) => (
                 <Link key={candidate.id} href={`/candidate/${candidate.id}`}>
-                  <Card className="bg-card border-border hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5 cursor-pointer h-full">
+                  <Card className={`news-card border-0 cursor-pointer h-full ${index === 0 ? 'md:col-span-2 lg:col-span-1' : ''}`}>
                     <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-2xl font-bold text-muted-foreground overflow-hidden">
+                      <div className="flex items-start gap-5">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-navy/20 to-teal/20 flex items-center justify-center text-3xl font-bold text-navy overflow-hidden flex-shrink-0">
                           {candidate.photoUrl ? (
                             <img 
                               src={candidate.photoUrl} 
@@ -325,25 +337,25 @@ export default function Home() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-bold mb-1">{candidate.name}</h3>
-                          <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-xl font-bold mb-2 text-foreground">{candidate.name}</h3>
+                          <div className="flex items-center gap-2 mb-3 flex-wrap">
                             {candidate.party && (
                               <Badge 
-                                variant="secondary" 
-                                className="text-xs"
+                                className="text-xs font-medium"
                                 style={{ 
-                                  backgroundColor: PARTIES.find(p => p.name === candidate.party)?.color + "20",
-                                  color: PARTIES.find(p => p.name === candidate.party)?.color
+                                  backgroundColor: (PARTIES.find(p => p.name === candidate.party)?.color || '#666') + "20",
+                                  color: PARTIES.find(p => p.name === candidate.party)?.color || '#666'
                                 }}
                               >
                                 {candidate.party}
                               </Badge>
                             )}
                             {candidate.isIncumbent && (
-                              <Badge variant="outline" className="text-xs">現任</Badge>
+                              <Badge variant="outline" className="text-xs border-crimson text-crimson">現任</Badge>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-muted-foreground flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
                             {candidate.county} {candidate.district || ""}
                           </p>
                         </div>
@@ -357,76 +369,137 @@ export default function Home() {
         </section>
       )}
 
-      {/* Latest News */}
+      {/* Latest News - Card Layout */}
       {latestNews && latestNews.length > 0 && (
-        <section className="py-20 bg-card/50">
+        <section className="py-24 bg-background">
           <div className="container">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold flex items-center gap-2">
-                <Newspaper className="w-8 h-8 text-primary" />
-                最新動態
-              </h2>
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <Badge className="mb-4 bg-destructive/10 text-destructive">即時更新</Badge>
+                <h2 className="text-4xl font-bold text-foreground flex items-center gap-3">
+                  <Newspaper className="w-10 h-10 text-navy" />
+                  最新動態
+                </h2>
+              </div>
               <Link href="/news">
-                <Button variant="ghost" className="gap-2">
+                <Button variant="outline" className="gap-2 border-navy text-navy hover:bg-navy hover:text-white">
                   查看全部 <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {latestNews.map((item) => (
-                <Link key={item.id} href={`/news/${item.id}`}>
-                  <Card className="bg-card border-border hover:border-primary/50 transition-all hover:shadow-lg cursor-pointer h-full">
-                    {item.imageUrl && (
-                      <div className="aspect-video overflow-hidden rounded-t-lg">
+            {/* Asymmetric News Grid */}
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Featured News - Large */}
+              {latestNews[0] && (
+                <Link href={`/news/${latestNews[0].id}`} className="lg:col-span-2">
+                  <Card className="news-card border-0 cursor-pointer h-full overflow-hidden">
+                    <div className="aspect-[16/9] lg:aspect-[21/9] overflow-hidden bg-gradient-to-br from-navy/10 to-teal/10">
+                      {latestNews[0].imageUrl ? (
                         <img 
-                          src={item.imageUrl} 
-                          alt={item.title}
+                          src={latestNews[0].imageUrl} 
+                          alt={latestNews[0].title}
                           className="w-full h-full object-cover"
                         />
-                      </div>
-                    )}
-                    <CardContent className="p-4">
-                      <h3 className="font-bold mb-2 line-clamp-2">{item.title}</h3>
-                      {item.summary && (
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                          {item.summary}
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Newspaper className="w-16 h-16 text-navy/30" />
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-6">
+                      <Badge className="mb-3 bg-destructive/10 text-destructive text-xs">頭條</Badge>
+                      <h3 className="text-2xl font-bold mb-3 line-clamp-2 text-foreground">{latestNews[0].title}</h3>
+                      {latestNews[0].summary && (
+                        <p className="text-muted-foreground line-clamp-2 mb-4">
+                          {latestNews[0].summary}
                         </p>
                       )}
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>{item.sourceName || "政見編輯部"}</span>
-                        <span>{new Date(item.publishedAt).toLocaleDateString("zh-TW")}</span>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {new Date(latestNews[0].publishedAt).toLocaleDateString("zh-TW")}
+                        </span>
+                        <span>{latestNews[0].sourceName || "政見編輯部"}</span>
                       </div>
                     </CardContent>
                   </Card>
                 </Link>
-              ))}
+              )}
+
+              {/* Side News - Stacked */}
+              <div className="flex flex-col gap-6">
+                {latestNews.slice(1, 4).map((item) => (
+                  <Link key={item.id} href={`/news/${item.id}`}>
+                    <Card className="news-card border-0 cursor-pointer">
+                      <CardContent className="p-5">
+                        <div className="flex gap-4">
+                          <div className="w-24 h-24 rounded-lg overflow-hidden bg-gradient-to-br from-navy/10 to-teal/10 flex-shrink-0">
+                            {item.imageUrl ? (
+                              <img 
+                                src={item.imageUrl} 
+                                alt={item.title}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Newspaper className="w-8 h-8 text-navy/30" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold mb-2 line-clamp-2 text-foreground">{item.title}</h3>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Clock className="w-3 h-3" />
+                              {new Date(item.publishedAt).toLocaleDateString("zh-TW")}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </section>
       )}
 
-
-
       {/* Footer */}
-      <footer className="py-12 border-t border-border">
+      <footer className="text-white py-16" style={{ backgroundColor: '#0A2342' }}>
         <div className="container">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Vote className="w-6 h-6 text-primary" />
-              <span className="font-bold">政見 political.now</span>
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-3 mb-4">
+                <Vote className="w-8 h-8 text-crimson" />
+                <span className="text-2xl font-bold">政見 political.now</span>
+              </div>
+              <p className="text-white/60 max-w-md leading-relaxed">
+                2026 台灣九合一地方選舉候選人資訊平台。我們致力於提供最完整、最透明的選舉資訊，幫助選民做出明智的投票決定。
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground text-center">
-              2026 台灣九合一地方選舉候選人資訊平台
-            </p>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <Link href="/about" className="hover:text-foreground transition-colors">
-                關於我們
-              </Link>
-              <Link href="/privacy" className="hover:text-foreground transition-colors">
-                隱私政策
-              </Link>
+            
+            <div>
+              <h4 className="font-bold mb-4 text-crimson">快速連結</h4>
+              <div className="flex flex-col gap-2">
+                <Link href="/candidates" className="text-white/60 hover:text-crimson transition-colors">候選人</Link>
+                <Link href="/news" className="text-white/60 hover:text-crimson transition-colors">最新動態</Link>
+                <Link href="/compare" className="text-white/60 hover:text-crimson transition-colors">政見比較</Link>
+              </div>
             </div>
+            
+            <div>
+              <h4 className="font-bold mb-4 text-crimson">關於</h4>
+              <div className="flex flex-col gap-2">
+                <Link href="/about" className="text-white/60 hover:text-crimson transition-colors">關於我們</Link>
+                <Link href="/privacy" className="text-white/60 hover:text-crimson transition-colors">隱私政策</Link>
+                <Link href="/terms" className="text-white/60 hover:text-crimson transition-colors">使用條款</Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-white/10 pt-8 text-center text-white/40 text-sm">
+            © 2026 政見 political.now. All rights reserved.
           </div>
         </div>
       </footer>
