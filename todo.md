@@ -310,3 +310,13 @@
 - [x] Auto-generate title and summary when saving news from URL
 - [x] Update existing news with proper source names
 - [x] Export extractSourceName function for URL-based source detection
+
+
+## 新聞搜尋功能改進 - 2026/01/17 (Phase 19)
+
+### Gemini API 新聞搜尋改進
+- [x] 修改 searchCandidateNews 函數，直接回傳結構化資料（標題、日期、摘要、連結）
+- [x] 使用 prompt 讓 Gemini 搜尋候選人的正面新聞
+- [x] 回傳格式包含：title, date, summary, sourceUrl, sourceName
+- [x] 更新前端 UI 顯示搜尋結果（包含日期、摘要）
+- [x] 支援一鍵批次新增所有搜尋到的新聞（「全部新增」按鈕）

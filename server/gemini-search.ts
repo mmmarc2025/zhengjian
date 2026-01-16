@@ -306,51 +306,95 @@ export function extractSourceName(url: string): string {
 }
 
 /**
- * Search for latest news about a candidate with real sources
- * Returns ONLY the real source URLs and titles from Google Search Grounding metadata
- * No AI-generated summaries - only verified links
+ * Search for latest positive news about a candidate
+ * Uses Gemini with Search Grounding to find and summarize real news
+ * Returns structured news data with title, date, summary, and source URL
  */
 export async function searchCandidateNewsWithSources(
   candidateName: string,
-  county: string
+  county: string,
+  count: number = 5
 ): Promise<NewsSearchResult[]> {
-  // Search for news with grounding - the key is to get real source URLs
-  const searchPrompt = `請搜尋「${candidateName}」的最新新聞報導。`;
+  // Search for positive news with grounding and ask for structured response
+  const searchPrompt = `請搜尋 ${count} 則「${candidateName}」的正面新聞報導，包含標題、內容摘要、連結。
 
-  const { sources } = await callGeminiWithSearch(searchPrompt);
+請以 JSON 格式回傳，格式如下：
+[
+  {
+    "title": "新聞標題",
+    "date": "YYYY/MM/DD",
+    "summary": "內容摘要（100-150字）",
+    "sourceUrl": "新聞連結",
+    "sourceName": "來源名稱（如：中央社、聯合新聞網、自由時報）"
+  }
+]
+
+注意：
+1. 只回傳正面新聞（政績、爭取經費、服務選民等）
+2. 摘要必須基於新聞實際內容
+3. 連結必須是真實可訪問的新聞網址
+4. 回傳有效的 JSON 陣列，開頭是 [ 結尾是 ]`;
+
+  try {
+    const { text, sources } = await callGeminiWithSearch(searchPrompt);
+    
+    // Try to extract JSON from response
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      const newsItems = JSON.parse(jsonMatch[0]) as Array<{
+        title: string;
+        date?: string;
+        summary: string;
+        sourceUrl: string;
+        sourceName: string;
+      }>;
+      
+      return newsItems.map((item) => ({
+        title: item.title,
+        summary: item.summary,
+        sourceUrl: item.sourceUrl,
+        sourceName: item.sourceName || extractSourceName(item.sourceUrl),
+        topic: "新聞報導",
+        publishedDate: item.date,
+      }));
+    }
+    
+    // Fallback: if no JSON found, try to use grounding sources
+    console.log(`[GeminiSearch] No JSON found in response, falling back to grounding sources`);
+    if (!sources || sources.length === 0) {
+      console.log(`[GeminiSearch] No news sources found for ${candidateName}`);
+      return [];
+    }
+
+    // Filter out non-news sources (like Wikipedia, government sites, etc.)
+    const newsSourcePatterns = [
+      'udn.com', 'ltn.com', 'chinatimes.com', 'ettoday.net', 'tvbs.com.tw',
+      'setn.com', 'mirrormedia.mg', 'cna.com.tw', 'storm.mg', 'newtalk.tw',
+      'nownews.com', 'appledaily.com', 'nextapple.com', 'yahoo.com', 'msn.com',
+      'businesstoday.com.tw', 'wealth.com.tw', 'ctee.com.tw', 'rti.org.tw',
+      'pts.org.tw', 'ftv.com.tw', 'ttv.com.tw', 'ctitv.com.tw', 'ebc.net.tw'
+    ];
+    
+    const newsSources = sources.filter(s => 
+      newsSourcePatterns.some(pattern => s.uri.includes(pattern))
+    );
   
-  // Return ONLY the real sources from Google Search Grounding metadata
-  // No AI-generated content - just the verified links and titles
-  if (!sources || sources.length === 0) {
-    console.log(`[GeminiSearch] No news sources found for ${candidateName}`);
+    // If no news sources found, return all sources
+    const finalSources = newsSources.length > 0 ? newsSources : sources;
+    
+    // Return the real sources directly - title is from the actual webpage
+    return finalSources.slice(0, 10).map((source) => ({
+      title: source.title,
+      summary: "", // No AI-generated summary
+      topic: "新聞報導",
+      publishedDate: undefined,
+      sourceUrl: source.uri,
+      sourceName: extractSourceName(source.uri),
+    }));
+  } catch (error) {
+    console.error(`Error searching news for ${candidateName}:`, error);
     return [];
   }
-
-  // Filter out non-news sources (like Wikipedia, government sites, etc.)
-  const newsSourcePatterns = [
-    'udn.com', 'ltn.com', 'chinatimes.com', 'ettoday.net', 'tvbs.com.tw',
-    'setn.com', 'mirrormedia.mg', 'cna.com.tw', 'storm.mg', 'newtalk.tw',
-    'nownews.com', 'appledaily.com', 'nextapple.com', 'yahoo.com', 'msn.com',
-    'businesstoday.com.tw', 'wealth.com.tw', 'ctee.com.tw', 'rti.org.tw',
-    'pts.org.tw', 'ftv.com.tw', 'ttv.com.tw', 'ctitv.com.tw', 'ebc.net.tw'
-  ];
-  
-  const newsSources = sources.filter(s => 
-    newsSourcePatterns.some(pattern => s.uri.includes(pattern))
-  );
-  
-  // If no news sources found, return all sources
-  const finalSources = newsSources.length > 0 ? newsSources : sources;
-  
-  // Return the real sources directly - title is from the actual webpage
-  return finalSources.slice(0, 10).map((source) => ({
-    title: source.title,
-    summary: "", // No AI-generated summary
-    topic: "新聞報導",
-    publishedDate: undefined,
-    sourceUrl: source.uri,
-    sourceName: extractSourceName(source.uri),
-  }));
 }
 
 /**
