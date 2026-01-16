@@ -183,3 +183,9 @@
 - 楊大鋐 (中國國民黨)
 - 黃馨慧 (中國國民黨)
 - 張廖乃綸 (中國國民黨)
+
+
+## Bug Fixes - 2026/01/16 (Phase 9)
+
+- [x] Fix Google OAuth login not working (wrong COOKIE_NAME: was "session", should be "app_session_id")
+- [ ] Fix admin login not working

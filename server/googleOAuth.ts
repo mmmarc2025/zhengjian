@@ -3,6 +3,7 @@ import * as db from "./db";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { sdk } from "./_core/sdk";
 import { ENV } from "./_core/env";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
 // Google OAuth 2.0 設定
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -159,15 +160,14 @@ export function registerGoogleOAuthRoutes(app: Express) {
       console.log("[Google OAuth] User logged in:", user.id);
 
       // 建立 session token
-      const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
       const sessionToken = await sdk.createSessionToken(openId, {
         name: profile.name,
         expiresInMs: ONE_YEAR_MS,
       });
 
-      // 設定 cookie
-      const COOKIE_NAME = "session";
+      // 設定 cookie - 使用與 SDK 相同的 COOKIE_NAME
       const cookieOptions = getSessionCookieOptions(req);
+      console.log("[Google OAuth] Setting cookie:", COOKIE_NAME, "options:", cookieOptions);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
       console.log("[Google OAuth] Login successful, redirecting to:", returnUrl);
