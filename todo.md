@@ -157,3 +157,5 @@
 
 - [x] Update Google OAuth Client ID to 878681000682-1f8bhpgssr78ihmgog3d99s8l870kk8g
 - [ ] Configure redirect_uri for new Google Client ID in Google Cloud Console
+
+- [x] Fix Google OAuth callback_failed error - updated Client Secret to match new Client ID
