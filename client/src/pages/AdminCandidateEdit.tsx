@@ -804,14 +804,18 @@ export default function AdminCandidateEdit() {
                     
                     {/* Footer: Link and Add Button */}
                     <div className="flex items-center justify-between pt-2">
-                      <a 
-                        href={item.sourceUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-xs text-primary hover:underline flex items-center gap-1"
-                      >
-                        查看原文 <ExternalLink className="w-3 h-3" />
-                      </a>
+                      {item.sourceUrl ? (
+                        <a 
+                          href={item.sourceUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xs text-primary hover:underline flex items-center gap-1"
+                        >
+                          查看原文 <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">無原文連結</span>
+                      )}
                       <Button
                         size="sm"
                         disabled={createNews.isPending}

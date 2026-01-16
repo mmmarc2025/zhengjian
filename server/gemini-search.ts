@@ -307,7 +307,9 @@ export function extractSourceName(url: string): string {
 
 /**
  * Search for latest positive news about a candidate
- * Uses Gemini with Search Grounding to find and summarize real news
+ * Uses two-phase approach:
+ * 1. Use Search Grounding to find real news sources
+ * 2. Use regular Gemini to parse and summarize the results
  * Returns structured news data with title, date, summary, and source URL
  */
 export async function searchCandidateNewsWithSources(
@@ -315,8 +317,31 @@ export async function searchCandidateNewsWithSources(
   county: string,
   count: number = 5
 ): Promise<NewsSearchResult[]> {
-  // Search for positive news with grounding and ask for structured response
-  const searchPrompt = `請搜尋 ${count} 則「${candidateName}」的正面新聞報導，包含標題、內容摘要、連結。
+  try {
+    console.log(`[GeminiSearch] Searching news for ${candidateName}...`);
+    
+    // Phase 1: Search for news with grounding to get real sources and content
+    const searchPrompt = `請搜尋 ${count} 則「${candidateName}」的正面新聞報導（政績、爭取經費、服務選民等）。
+請列出每則新聞的標題、日期、內容摘要和來源。`;
+    
+    const { text: searchResult, sources } = await callGeminiWithSearch(searchPrompt);
+    
+    console.log(`[GeminiSearch] Search result length: ${searchResult.length}`);
+    console.log(`[GeminiSearch] Sources count: ${sources.length}`);
+    
+    // Log the actual search result for debugging
+    console.log(`[GeminiSearch] Raw search result:`, searchResult.substring(0, 1000));
+    
+    if (!searchResult || searchResult.trim().length === 0) {
+      console.log(`[GeminiSearch] No search results for ${candidateName}`);
+      return [];
+    }
+    
+    // Phase 2: Parse the search result to structured JSON
+    const parsePrompt = `根據以下搜尋結果，提取新聞資訊並以 JSON 格式回傳。
+
+搜尋結果：
+${searchResult}
 
 請以 JSON 格式回傳，格式如下：
 [
@@ -330,43 +355,56 @@ export async function searchCandidateNewsWithSources(
 ]
 
 注意：
-1. 只回傳正面新聞（政績、爭取經費、服務選民等）
-2. 摘要必須基於新聞實際內容
-3. 連結必須是真實可訪問的新聞網址
+1. 只提取明確提到的新聞
+2. 摘要必須基於搜尋結果中的實際內容
+3. 如果沒有明確的連結，請留空
 4. 回傳有效的 JSON 陣列，開頭是 [ 結尾是 ]`;
-
-  try {
-    const { text, sources } = await callGeminiWithSearch(searchPrompt);
     
-    // Try to extract JSON from response
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    const parseResult = await callGemini(parsePrompt);
+    
+    // Extract JSON from response
+    const jsonMatch = parseResult.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
-      const newsItems = JSON.parse(jsonMatch[0]) as Array<{
-        title: string;
-        date?: string;
-        summary: string;
-        sourceUrl: string;
-        sourceName: string;
-      }>;
-      
-      return newsItems.map((item) => ({
-        title: item.title,
-        summary: item.summary,
-        sourceUrl: item.sourceUrl,
-        sourceName: item.sourceName || extractSourceName(item.sourceUrl),
-        topic: "新聞報導",
-        publishedDate: item.date,
-      }));
+      try {
+        const newsItems = JSON.parse(jsonMatch[0]) as Array<{
+          title: string;
+          date?: string;
+          summary: string;
+          sourceUrl: string;
+          sourceName: string;
+        }>;
+        
+        console.log(`[GeminiSearch] Parsed ${newsItems.length} news items`);
+        
+        // Try to match with grounding sources for better URLs
+        return newsItems.map((item) => {
+          // Find matching source from grounding metadata
+          const matchingSource = sources.find(s => 
+            s.title.includes(item.title.substring(0, 10)) || 
+            item.title.includes(s.title.substring(0, 10))
+          );
+          
+          return {
+            title: item.title,
+            summary: item.summary,
+            sourceUrl: matchingSource?.uri || item.sourceUrl || "",
+            sourceName: item.sourceName || extractSourceName(matchingSource?.uri || item.sourceUrl || ""),
+            topic: "新聞報導",
+            publishedDate: item.date,
+          };
+        });
+      } catch (parseError) {
+        console.error(`[GeminiSearch] JSON parse error:`, parseError);
+      }
     }
     
-    // Fallback: if no JSON found, try to use grounding sources
-    console.log(`[GeminiSearch] No JSON found in response, falling back to grounding sources`);
+    // Fallback: use grounding sources directly
+    console.log(`[GeminiSearch] Falling back to grounding sources`);
     if (!sources || sources.length === 0) {
-      console.log(`[GeminiSearch] No news sources found for ${candidateName}`);
       return [];
     }
-
-    // Filter out non-news sources (like Wikipedia, government sites, etc.)
+    
+    // Filter out non-news sources
     const newsSourcePatterns = [
       'udn.com', 'ltn.com', 'chinatimes.com', 'ettoday.net', 'tvbs.com.tw',
       'setn.com', 'mirrormedia.mg', 'cna.com.tw', 'storm.mg', 'newtalk.tw',
@@ -378,14 +416,11 @@ export async function searchCandidateNewsWithSources(
     const newsSources = sources.filter(s => 
       newsSourcePatterns.some(pattern => s.uri.includes(pattern))
     );
-  
-    // If no news sources found, return all sources
     const finalSources = newsSources.length > 0 ? newsSources : sources;
     
-    // Return the real sources directly - title is from the actual webpage
-    return finalSources.slice(0, 10).map((source) => ({
+    return finalSources.slice(0, count).map((source) => ({
       title: source.title,
-      summary: "", // No AI-generated summary
+      summary: "",
       topic: "新聞報導",
       publishedDate: undefined,
       sourceUrl: source.uri,
