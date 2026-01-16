@@ -394,7 +394,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Vote className="w-6 h-6 text-primary" />
-              <span className="font-bold">政見 ZhengJian</span>
+              <span className="font-bold">政見 political.now</span>
             </div>
             <p className="text-sm text-muted-foreground text-center">
               2026 台灣九合一地方選舉候選人資訊平台
