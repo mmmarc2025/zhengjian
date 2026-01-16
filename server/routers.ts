@@ -123,6 +123,42 @@ const candidateRouter = router({
       await db.deleteCandidate(input.id);
       return { success: true };
     }),
+
+  // Batch delete candidates
+  batchDelete: adminProcedure
+    .input(z.object({ ids: z.array(z.number()).min(1) }))
+    .mutation(async ({ input }) => {
+      for (const id of input.ids) {
+        await db.deleteCandidate(id);
+      }
+      return { success: true, deletedCount: input.ids.length };
+    }),
+
+  // Batch update candidates
+  batchUpdate: adminProcedure
+    .input(z.object({
+      ids: z.array(z.number()).min(1),
+      party: z.string().optional(),
+      county: z.string().optional(),
+      positionType: z.enum(["mayor", "councilor", "township_mayor", "representative", "village_chief"]).optional(),
+      isActive: z.boolean().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const { ids, ...data } = input;
+      // Only update fields that are provided
+      const updateData = Object.fromEntries(
+        Object.entries(data).filter(([_, v]) => v !== undefined)
+      );
+      
+      if (Object.keys(updateData).length === 0) {
+        return { success: false, message: "No fields to update" };
+      }
+      
+      for (const id of ids) {
+        await db.updateCandidate(id, updateData);
+      }
+      return { success: true, updatedCount: ids.length };
+    }),
 });
 
 // ============ Policy Router ============

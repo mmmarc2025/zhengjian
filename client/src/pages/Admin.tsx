@@ -215,6 +215,50 @@ function CandidatesAdmin() {
     onError: (e) => toast.error(e.message),
   });
 
+  // 批次操作
+  const [isBatchEditOpen, setIsBatchEditOpen] = useState(false);
+  const [batchForm, setBatchForm] = useState({
+    party: "",
+    county: "",
+    positionType: "",
+  });
+
+  const batchDelete = trpc.candidate.batchDelete.useMutation({
+    onSuccess: (data) => {
+      refetch();
+      setSelectedIds(new Set());
+      toast.success(`已刪除 ${data.deletedCount} 位候選人`);
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const batchUpdate = trpc.candidate.batchUpdate.useMutation({
+    onSuccess: (data) => {
+      refetch();
+      setSelectedIds(new Set());
+      setIsBatchEditOpen(false);
+      setBatchForm({ party: "", county: "", positionType: "" });
+      toast.success(`已更新 ${data.updatedCount} 位候選人`);
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const handleBatchDelete = () => {
+    if (selectedIds.size === 0) return;
+    if (confirm(`確定要刪除選取的 ${selectedIds.size} 位候選人嗎？`)) {
+      batchDelete.mutate({ ids: Array.from(selectedIds) });
+    }
+  };
+
+  const handleBatchUpdate = () => {
+    if (selectedIds.size === 0) return;
+    const updateData: any = { ids: Array.from(selectedIds) };
+    if (batchForm.party) updateData.party = batchForm.party;
+    if (batchForm.county) updateData.county = batchForm.county;
+    if (batchForm.positionType) updateData.positionType = batchForm.positionType;
+    batchUpdate.mutate(updateData);
+  };
+
   const [form, setForm] = useState({
     name: "",
     party: "",
@@ -273,20 +317,40 @@ function CandidatesAdmin() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">候選人管理</h2>
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) {
-            setEditingCandidate(null);
-            resetForm();
-          }
-        }}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              新增候選人
-            </Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-4">
+          <h2 className="text-xl font-bold">候選人管理</h2>
+          {selectedIds.size > 0 && (
+            <span className="text-sm text-muted-foreground">
+              已選取 {selectedIds.size} 位
+            </span>
+          )}
+        </div>
+        <div className="flex gap-2">
+          {selectedIds.size > 0 && (
+            <>
+              <Button variant="outline" onClick={() => setIsBatchEditOpen(true)}>
+                <Pencil className="w-4 h-4 mr-2" />
+                批次編輯
+              </Button>
+              <Button variant="destructive" onClick={handleBatchDelete} disabled={batchDelete.isPending}>
+                <Trash2 className="w-4 h-4 mr-2" />
+                批次刪除
+              </Button>
+            </>
+          )}
+          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) {
+              setEditingCandidate(null);
+              resetForm();
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                新增候選人
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingCandidate ? "編輯候選人" : "新增候選人"}</DialogTitle>
@@ -401,7 +465,72 @@ function CandidatesAdmin() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
+
+      {/* 批次編輯 Dialog */}
+      <Dialog open={isBatchEditOpen} onOpenChange={setIsBatchEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>批次編輯 {selectedIds.size} 位候選人</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div>
+              <Label>政黨</Label>
+              <Select value={batchForm.party} onValueChange={(v) => setBatchForm({...batchForm, party: v})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="不變更" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="_clear">清除政黨</SelectItem>
+                  {PARTIES.map((p) => (
+                    <SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>縣市</Label>
+              <Select value={batchForm.county} onValueChange={(v) => setBatchForm({...batchForm, county: v})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="不變更" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(COUNTIES).map((county) => (
+                    <SelectItem key={county} value={county}>{county}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>職位類型</Label>
+              <Select value={batchForm.positionType} onValueChange={(v) => setBatchForm({...batchForm, positionType: v})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="不變更" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mayor">縣市長</SelectItem>
+                  <SelectItem value="councilor">縣市議員</SelectItem>
+                  <SelectItem value="township_mayor">鄉鎮市長</SelectItem>
+                  <SelectItem value="representative">鄉鎮市民代表</SelectItem>
+                  <SelectItem value="village_chief">村里長</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">取消</Button>
+            </DialogClose>
+            <Button 
+              onClick={handleBatchUpdate}
+              disabled={batchUpdate.isPending || (!batchForm.party && !batchForm.county && !batchForm.positionType)}
+            >
+              更新
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Card className="bg-card border-border">
         <Table>

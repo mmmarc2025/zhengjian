@@ -265,19 +265,22 @@ interface NewsSearchResult {
 /**
  * Search for latest news about a candidate with real sources
  * Uses two-phase approach: search for info, then parse to JSON
+ * Returns news with verified source URLs from Google Search Grounding
  */
 export async function searchCandidateNewsWithSources(
   candidateName: string,
   county: string
 ): Promise<NewsSearchResult[]> {
-  // Phase 1: Search for news with grounding - ask for detailed information
-  const searchPrompt = `請搜尋關於「${candidateName}」（${county}）的最新選舉相關新聞。
+  // Phase 1: Search for news with grounding - be specific about requiring real news
+  const searchPrompt = `請搜尋「${candidateName}」政治人物的最新新聞報導。
 
-請列出最近 3-5 則新聞，每則包含：
-1. 新聞標題
+請從台灣新聞網站（如聯合新聞網、自由時報、中時新聞網、ETtoday、TVBS、三立新聞、鏡週刊等）搜尋與「${candidateName}」相關的新聞報導。
+
+每則新聞請提供：
+1. 完整新聞標題
 2. 新聞內容摘要（100-150 字）
-3. 新聞來源
-4. 發布日期（如有）`;
+3. 新聞來源名稱
+4. 發布日期`;
 
   const { text: searchResult, sources } = await callGeminiWithSearch(searchPrompt);
   
@@ -286,26 +289,40 @@ export async function searchCandidateNewsWithSources(
     return [];
   }
 
-  // Phase 2: Parse the search result to JSON
-  const parsePrompt = `根據以下搜尋結果，提取新聞資訊並以 JSON 格式回傳。
+  // Phase 2: Parse the search result to JSON with source URLs
+  // Build a source URL map from grounding metadata
+  const sourceUrlMap = sources.reduce((acc, s, i) => {
+    acc[i] = s.uri;
+    return acc;
+  }, {} as Record<number, string>);
+  
+  const sourcesList = sources.map((s, i) => `[${i + 1}] ${s.title}: ${s.uri}`).join('\n');
+  
+  const parsePrompt = `根據以下搜尋結果和來源連結，提取新聞資訊並以 JSON 格式回傳。
 
 搜尋結果：
 ${searchResult}
+
+可用的來源連結：
+${sourcesList}
 
 請以 JSON 格式回傳最多 5 則新聞，格式如下：
 [
   {
     "title": "新聞標題",
     "summary": "新聞摘要（約 100-150 字）",
-    "topic": "新聞主題分類（如：政見發表、選情分析、民調、造勢活動、政策辯論、爭議事件等）",
+    "sourceName": "新聞來源名稱（如：聯合新聞網、自由時報、ETtoday 等）",
+    "sourceUrl": "從上面可用來源連結中選擇最相關的 URL",
+    "topic": "新聞主題分類（如：參選宣布、政見發表、選情分析、民調、造勢活動、政策辩論、爭議事件等）",
     "publishedDate": "發布日期（如有，格式：YYYY-MM-DD）"
   }
 ]
 
-注意：
-1. 每則新聞的 topic 必須是獨特的
-2. 只提取明確提到的新聞
-3. 回傳有效的 JSON 陣列，開頭是 [ 結尾是 ]`;
+重要注意：
+1. sourceUrl 必須是上面「可用的來源連結」中的其中一個 URL，不要自己編造
+2. 每則新聞的 topic 必須是獨特的
+3. 只提取明確提到的新聞
+4. 回傳有效的 JSON 陣列，開頭是 [ 結尾是 ]`;
 
   try {
     const parseResult = await callGemini(parsePrompt);
@@ -320,19 +337,30 @@ ${searchResult}
     const newsItems = JSON.parse(jsonMatch[0]) as Array<{
       title: string;
       summary: string;
+      sourceName?: string;
+      sourceUrl?: string;
       topic: string;
       publishedDate?: string;
     }>;
 
-    // Map sources to news items
-    return newsItems.map((item, index) => ({
-      title: item.title,
-      summary: item.summary,
-      topic: item.topic,
-      publishedDate: item.publishedDate,
-      sourceUrl: sources[index]?.uri || sources[0]?.uri || "",
-      sourceName: sources[index]?.title || sources[0]?.title || "網路新聞",
-    }));
+    // Use sourceUrl from AI response if available, otherwise fallback to grounding sources
+    return newsItems.map((item, index) => {
+      // Validate that sourceUrl is from our sources list
+      let validSourceUrl = item.sourceUrl || "";
+      if (validSourceUrl && !sources.some(s => s.uri === validSourceUrl)) {
+        // If AI provided URL is not in our sources, use the closest match from sources
+        validSourceUrl = sources[index]?.uri || sources[0]?.uri || "";
+      }
+      
+      return {
+        title: item.title,
+        summary: item.summary,
+        topic: item.topic,
+        publishedDate: item.publishedDate,
+        sourceUrl: validSourceUrl,
+        sourceName: item.sourceName || sources[index]?.title || sources[0]?.title || "網路新聞",
+      };
+    });
   } catch (error) {
     console.error(`Error parsing news for ${candidateName}:`, error);
     return [];

@@ -272,3 +272,16 @@
 - [x] Add route in App.tsx
 - [x] Add searchPolicies and searchNews API endpoints
 - [x] Add candidateNews.create API endpoint
+
+
+## 管理後台功能改進 - 2026/01/16 (Phase 15)
+
+### 候選人列表批次操作
+- [x] Add batch delete functionality for selected candidates
+- [x] Add batch edit dialog for party, county, position type
+- [x] Show selected count and action buttons when candidates are selected
+
+### AI 搜尋新聞改進
+- [x] Use Gemini Search Grounding to search real news
+- [x] AI summarizes news and returns title, summary, source URL
+- [x] Ensure news links are validated against grounding metadata sources
