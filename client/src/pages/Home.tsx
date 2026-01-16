@@ -46,29 +46,29 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Modern Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 text-white" style={{ backgroundColor: '#0A2342' }}>
+      {/* Modern Navigation - White background */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
         <div className="container flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3">
-            <Vote className="w-7 h-7 text-crimson" />
+            <Vote className="w-7 h-7" style={{ color: '#A81C31' }} />
             <div className="flex items-baseline gap-1">
-              <span className="text-xl font-bold text-crimson">政見</span>
-              <span className="text-sm text-white/80">political.now</span>
+              <span className="text-xl font-bold" style={{ color: '#A81C31' }}>政見</span>
+              <span className="text-sm" style={{ color: '#0A2342' }}>political.now</span>
             </div>
           </Link>
           
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/candidates" className="text-white/80 hover:text-crimson transition-colors font-medium">
+            <Link href="/candidates" className="font-medium transition-colors" style={{ color: '#0A2342' }}>
               候選人
             </Link>
-            <Link href="/news" className="text-white/80 hover:text-crimson transition-colors font-medium">
+            <Link href="/news" className="font-medium transition-colors" style={{ color: '#0A2342' }}>
               最新動態
             </Link>
-            <Link href="/compare" className="text-white/80 hover:text-crimson transition-colors font-medium">
+            <Link href="/compare" className="font-medium transition-colors" style={{ color: '#0A2342' }}>
               政見比較
             </Link>
             {user?.role === "admin" && (
-              <Link href="/admin" className="text-white/80 hover:text-crimson transition-colors font-medium">
+              <Link href="/admin" className="font-medium transition-colors" style={{ color: '#0A2342' }}>
                 管理後台
               </Link>
             )}
@@ -78,7 +78,8 @@ export default function Home() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-white/80 hover:text-crimson hover:bg-white/10"
+              className="hover:bg-gray-100"
+              style={{ color: '#0A2342' }}
               onClick={() => document.getElementById('search-input')?.focus()}
             >
               <Search className="w-5 h-5" />
@@ -87,12 +88,12 @@ export default function Home() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 flex items-center gap-2">
+                  <Button variant="ghost" size="sm" className="hover:bg-gray-100 flex items-center gap-2" style={{ color: '#0A2342' }}>
                     <span className="text-sm hidden sm:inline">
                       {user.name || "使用者"}
                     </span>
                     {user.role === "admin" && (
-                      <Badge className="bg-crimson text-navy text-xs">
+                      <Badge className="text-xs text-white" style={{ backgroundColor: '#A81C31' }}>
                         管理員
                       </Badge>
                     )}
@@ -130,23 +131,23 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section - Deep Navy with Crimson accents */}
-      <section className="pt-16 min-h-[85vh] flex items-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0A2342 0%, #061529 100%)' }}>
+      {/* Hero Section - White background with Navy/Crimson accents */}
+      <section className="pt-16 min-h-[85vh] flex items-center relative overflow-hidden bg-gradient-to-b from-gray-50 to-white">
         <div className="container relative z-10 py-20">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <Badge className="mb-8 bg-crimson/20 text-crimson border-crimson/30 px-4 py-2 text-sm font-semibold">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge className="mb-8 px-4 py-2 text-sm font-semibold border" style={{ backgroundColor: '#A81C31', color: 'white', borderColor: '#A81C31' }}>
               2026 九合一地方選舉
             </Badge>
             
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 tracking-tight leading-none">
-              <span className="text-crimson">政見</span>
-              <span className="text-white/90"> political.now</span>
+              <span style={{ color: '#A81C31' }}>政見</span>
+              <span style={{ color: '#0A2342' }}> political.now</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto leading-relaxed" style={{ color: '#4a5568' }}>
               全台灣最完整的候選人政見資料庫
               <br />
-              <span className="text-white font-semibold">查詢、比較、參與討論</span>
+              <span className="font-semibold" style={{ color: '#0A2342' }}>查詢、比較、參與討論</span>
             </p>
 
             {/* Search Bar */}
@@ -173,22 +174,22 @@ export default function Home() {
             {/* Quick Stats */}
             <div className="grid grid-cols-3 gap-8 max-w-xl mx-auto">
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-crimson mb-2">
+                <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#A81C31' }}>
                   {stats?.totalCandidates || 0}
                 </div>
-                <div className="text-sm text-white/60 uppercase tracking-wide">候選人</div>
+                <div className="text-sm uppercase tracking-wide" style={{ color: '#718096' }}>候選人</div>
               </div>
-              <div className="text-center border-x border-white/20">
-                <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <div className="text-center border-x" style={{ borderColor: '#e2e8f0' }}>
+                <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#0A2342' }}>
                   {stats?.totalPolicies || 0}
                 </div>
-                <div className="text-sm text-white/60 uppercase tracking-wide">政見</div>
+                <div className="text-sm uppercase tracking-wide" style={{ color: '#718096' }}>政見</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-crimson mb-2">
+                <div className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#A81C31' }}>
                   {stats?.totalComments || 0}
                 </div>
-                <div className="text-sm text-white/60 uppercase tracking-wide">討論</div>
+                <div className="text-sm uppercase tracking-wide" style={{ color: '#718096' }}>討論</div>
               </div>
             </div>
           </div>
@@ -465,40 +466,40 @@ export default function Home() {
         </section>
       )}
 
-      {/* Footer */}
-      <footer className="text-white py-16" style={{ backgroundColor: '#0A2342' }}>
+      {/* Footer - Light background */}
+      <footer className="py-16 bg-gray-50 border-t border-gray-200">
         <div className="container">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <Vote className="w-8 h-8 text-crimson" />
-                <span className="text-2xl font-bold">政見 political.now</span>
+                <Vote className="w-8 h-8" style={{ color: '#A81C31' }} />
+                <span className="text-2xl font-bold" style={{ color: '#0A2342' }}>政見 political.now</span>
               </div>
-              <p className="text-white/60 max-w-md leading-relaxed">
+              <p className="max-w-md leading-relaxed" style={{ color: '#718096' }}>
                 2026 台灣九合一地方選舉候選人資訊平台。我們致力於提供最完整、最透明的選舉資訊，幫助選民做出明智的投票決定。
               </p>
             </div>
             
             <div>
-              <h4 className="font-bold mb-4 text-crimson">快速連結</h4>
+              <h4 className="font-bold mb-4" style={{ color: '#A81C31' }}>快速連結</h4>
               <div className="flex flex-col gap-2">
-                <Link href="/candidates" className="text-white/60 hover:text-crimson transition-colors">候選人</Link>
-                <Link href="/news" className="text-white/60 hover:text-crimson transition-colors">最新動態</Link>
-                <Link href="/compare" className="text-white/60 hover:text-crimson transition-colors">政見比較</Link>
+                <Link href="/candidates" className="transition-colors hover:opacity-70" style={{ color: '#4a5568' }}>候選人</Link>
+                <Link href="/news" className="transition-colors hover:opacity-70" style={{ color: '#4a5568' }}>最新動態</Link>
+                <Link href="/compare" className="transition-colors hover:opacity-70" style={{ color: '#4a5568' }}>政見比較</Link>
               </div>
             </div>
             
             <div>
-              <h4 className="font-bold mb-4 text-crimson">關於</h4>
+              <h4 className="font-bold mb-4" style={{ color: '#A81C31' }}>關於</h4>
               <div className="flex flex-col gap-2">
-                <Link href="/about" className="text-white/60 hover:text-crimson transition-colors">關於我們</Link>
-                <Link href="/privacy" className="text-white/60 hover:text-crimson transition-colors">隱私政策</Link>
-                <Link href="/terms" className="text-white/60 hover:text-crimson transition-colors">使用條款</Link>
+                <Link href="/about" className="transition-colors hover:opacity-70" style={{ color: '#4a5568' }}>關於我們</Link>
+                <Link href="/privacy" className="transition-colors hover:opacity-70" style={{ color: '#4a5568' }}>隱私政策</Link>
+                <Link href="/terms" className="transition-colors hover:opacity-70" style={{ color: '#4a5568' }}>使用條款</Link>
               </div>
             </div>
           </div>
           
-          <div className="border-t border-white/10 pt-8 text-center text-white/40 text-sm">
+          <div className="border-t pt-8 text-center text-sm" style={{ borderColor: '#e2e8f0', color: '#a0aec0' }}>
             © 2026 政見 political.now. All rights reserved.
           </div>
         </div>

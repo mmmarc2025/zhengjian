@@ -209,3 +209,13 @@
 - [x] Category tags with party colors
 - [x] New light-navy theme added to ThemeProvider
 - [x] Updated ThemeSwitcher component with Anchor icon
+
+
+## UI 調整 - 2026/01/16 (Phase 11)
+
+- [x] Change to white background design
+- [x] Keep Navy Blue (#0A2342) and Crimson (#A81C31) as accent colors
+- [x] Adjust Hero section to white/light gradient background
+- [x] Adjust Navigation to white background with navy text
+- [x] Ensure text readability on light background
+- [x] Adjust Footer to light gray background
