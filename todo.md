@@ -151,3 +151,9 @@
 - [x] Fix LINE OAuth redirect_uri issue in production (hardcoded credentials)
 
 - [x] Fix logout functionality not working (now uses tRPC client correctly)
+
+
+## Current Issues - 2026/01/16
+
+- [x] Update Google OAuth Client ID to 878681000682-1f8bhpgssr78ihmgog3d99s8l870kk8g
+- [ ] Configure redirect_uri for new Google Client ID in Google Cloud Console

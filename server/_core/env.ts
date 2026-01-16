@@ -11,6 +11,6 @@ export const ENV = {
   lineChannelId: "2008905096",
   lineChannelSecret: "6307397ba05cbfe045fdac532abe6290",
   // Google OAuth - 直接使用硬編碼憑證（繞過 Manus 系統環境變數）
-  googleClientId: "957808745887-spn93h8kq679i4i4jto4lsbn53138gi6.apps.googleusercontent.com",
+  googleClientId: "878681000682-1f8bhpgssr78ihmgog3d99s8l870kk8g.apps.googleusercontent.com",
   googleClientSecret: "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",
 };
