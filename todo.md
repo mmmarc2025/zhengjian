@@ -159,3 +159,5 @@
 - [ ] Configure redirect_uri for new Google Client ID in Google Cloud Console
 
 - [x] Fix Google OAuth callback_failed error - updated Client Secret to match new Client ID
+
+- [x] Fix Google OAuth returns correctly but user is not logged in (fixed cookie settings for production)

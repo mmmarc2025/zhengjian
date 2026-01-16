@@ -21,28 +21,32 @@ function isSecureRequest(req: Request) {
   return protoList.some(proto => proto.trim().toLowerCase() === "https");
 }
 
+function isProductionHost(req: Request): boolean {
+  const host = req.get("host") || req.hostname || "";
+  return host.includes("political.now") || host.includes(".run.app") || host.includes(".manus.");
+}
+
 export function getSessionCookieOptions(
   req: Request
 ): Pick<CookieOptions, "domain" | "httpOnly" | "path" | "sameSite" | "secure"> {
-  // const hostname = req.hostname;
-  // const shouldSetDomain =
-  //   hostname &&
-  //   !LOCAL_HOSTS.has(hostname) &&
-  //   !isIpAddress(hostname) &&
-  //   hostname !== "127.0.0.1" &&
-  //   hostname !== "::1";
-
-  // const domain =
-  //   shouldSetDomain && !hostname.startsWith(".")
-  //     ? `.${hostname}`
-  //     : shouldSetDomain
-  //       ? hostname
-  //       : undefined;
+  const hostname = req.hostname;
+  const isProduction = isProductionHost(req);
+  
+  // 在正式環境中，強制使用 secure: true
+  // 因為 Manus 代理可能不正確傳遞 x-forwarded-proto
+  const secure = isProduction ? true : isSecureRequest(req);
+  
+  // 設定 domain 以確保 cookie 在正確的 domain 上生效
+  let domain: string | undefined = undefined;
+  if (hostname && hostname.includes("political.now")) {
+    domain = ".political.now";
+  }
 
   return {
     httpOnly: true,
     path: "/",
     sameSite: "none",
-    secure: isSecureRequest(req),
+    secure: secure,
+    domain: domain,
   };
 }
