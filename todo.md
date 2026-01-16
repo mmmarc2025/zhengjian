@@ -104,3 +104,5 @@
 - [x] Upload and update photos in database
 
 - [x] Add theme switcher feature (white contour style with blue/red/black colors)
+
+- [x] Update 謝龍介 photo with user-provided URL
