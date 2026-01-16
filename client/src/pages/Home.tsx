@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Input } from "@/components/ui/input";
@@ -21,10 +20,12 @@ import {
 import { useState, useEffect } from "react";
 import { COUNTIES, PARTIES, POSITION_TYPES } from "@shared/constants";
 import { getLineLoginUrl } from "@/const";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function Home() {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const logoutMutation = trpc.auth.logout.useMutation();
   
   // SEO: 動態設定頁面標題
   useEffect(() => {
@@ -100,9 +101,11 @@ export default function Home() {
                   <DropdownMenuItem 
                     className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
                     onClick={() => {
-                      // 登出處理
-                      fetch('/api/trpc/auth.logout', { method: 'POST' })
-                        .then(() => window.location.href = '/');
+                      logoutMutation.mutate(undefined, {
+                        onSuccess: () => {
+                          window.location.href = '/';
+                        },
+                      });
                     }}
                   >
                     <LogOut className="w-4 h-4" />

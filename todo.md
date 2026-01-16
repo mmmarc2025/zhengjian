@@ -149,3 +149,5 @@
 
 - [x] Fix Google OAuth using wrong client_id in production (hardcoded credentials)
 - [x] Fix LINE OAuth redirect_uri issue in production (hardcoded credentials)
+
+- [x] Fix logout functionality not working (now uses tRPC client correctly)
