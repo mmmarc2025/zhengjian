@@ -582,27 +582,25 @@ const aiRouter = router({
       return { policies: savedPolicies };
     }),
 
-  // Search and save news for a specific candidate
+  // Search news for a specific candidate - returns list for selection (does not auto-save)
   searchNews: adminProcedure
     .input(z.object({ candidateId: z.number() }))
     .mutation(async ({ input }) => {
       const candidate = await db.getCandidateById(input.candidateId);
       if (!candidate) throw new TRPCError({ code: "NOT_FOUND", message: "Candidate not found" });
       
-      const newsItems = await gemini.searchCandidateNews(candidate.name, candidate.county);
-      const savedNews = [];
+      // Use the new function that returns only real sources from Google Search Grounding
+      const newsItems = await geminiSearch.searchCandidateNewsWithSources(candidate.name, candidate.county);
       
-      for (const item of newsItems) {
-        const id = await db.createCandidateNews({
-          candidateId: input.candidateId,
+      // Return the news list for admin to select which ones to add
+      // Each item has: title, sourceUrl, sourceName (all from real sources)
+      return { 
+        news: newsItems.map(item => ({
           title: item.title,
-          summary: item.summary,
-          sourceName: item.source,
-        });
-        savedNews.push({ id, ...item });
-      }
-      
-      return { news: savedNews };
+          sourceUrl: item.sourceUrl,
+          sourceName: item.sourceName,
+        }))
+      };
     }),
 
   // Batch update: fetch and save news for all candidates

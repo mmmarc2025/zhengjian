@@ -107,8 +107,13 @@ export default function AdminCandidateEdit() {
 
   const searchNews = trpc.ai.searchNews.useMutation({
     onSuccess: (data) => {
-      refetchNews();
-      toast.success(`已新增 ${data.news.length} 則新聞`);
+      if (data.news.length === 0) {
+        toast.info("未找到相關新聞");
+        return;
+      }
+      setNewsSearchResults(data.news);
+      setIsNewsSearchDialogOpen(true);
+      toast.success(`找到 ${data.news.length} 則新聞，請選擇要新增的新聞`);
     },
     onError: (e) => toast.error(`搜尋失敗: ${e.message}`),
   });
@@ -161,6 +166,14 @@ export default function AdminCandidateEdit() {
     sourceName: "",
     imageUrl: "",
   });
+
+  // State for news search results dialog
+  const [isNewsSearchDialogOpen, setIsNewsSearchDialogOpen] = useState(false);
+  const [newsSearchResults, setNewsSearchResults] = useState<Array<{
+    title: string;
+    sourceUrl: string;
+    sourceName: string;
+  }>>([]);
 
   // Initialize form when candidate data loads
   useEffect(() => {
@@ -756,6 +769,71 @@ export default function AdminCandidateEdit() {
           </div>
         </div>
       </main>
+
+      {/* News Search Results Dialog */}
+      <Dialog open={isNewsSearchDialogOpen} onOpenChange={setIsNewsSearchDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>搜尋結果 - 選擇要新增的新聞</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-4">
+            {newsSearchResults.map((item, index) => (
+              <Card key={index} className="hover:bg-accent/50 transition-colors">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-sm line-clamp-2">{item.title}</h4>
+                      <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                        <Badge variant="outline" className="text-xs">{item.sourceName}</Badge>
+                        <a 
+                          href={item.sourceUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline flex items-center gap-1"
+                        >
+                          查看原文 <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={async () => {
+                        try {
+                          await createNews.mutateAsync({
+                            candidateId,
+                            title: item.title,
+                            summary: "",
+                            sourceUrl: item.sourceUrl,
+                            sourceName: item.sourceName,
+                          });
+                          // Remove from list after adding
+                          setNewsSearchResults(prev => prev.filter((_, i) => i !== index));
+                          toast.success("已新增新聞");
+                        } catch (e: any) {
+                          toast.error(e.message || "新增失敗");
+                        }
+                      }}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      新增
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {newsSearchResults.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                所有新聞已新增完成
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsNewsSearchDialogOpen(false)}>
+              關閉
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

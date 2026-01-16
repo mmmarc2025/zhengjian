@@ -285,3 +285,11 @@
 - [x] Use Gemini Search Grounding to search real news
 - [x] AI summarizes news and returns title, summary, source URL
 - [x] Ensure news links are validated against grounding metadata sources
+
+
+## AI 搜尋新聞修正 - 2026/01/16 (Phase 16)
+
+- [x] Modify AI search to only return real news links and titles from Google Search Grounding
+- [x] Remove AI-generated summaries (they are fictional)
+- [x] Update frontend UI to display news link list for selection
+- [x] Allow admin to select which news to add
