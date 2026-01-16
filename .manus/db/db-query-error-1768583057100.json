@@ -1,0 +1,8 @@
+{
+  "query": "DELETE FROM candidate_news WHERE source_name = 'vertexaisearch';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute DELETE FROM candidate_news WHERE source_name = 'vertexaisearch';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'source_name' in 'where clause'"
+  ]
+}

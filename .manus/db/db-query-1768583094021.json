@@ -1,0 +1,88 @@
+{
+  "query": "SELECT id, candidateId, title, sourceName FROM candidate_news LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, candidateId, title, sourceName FROM candidate_news LIMIT 20;",
+  "rows": [
+    {
+      "id": "120018",
+      "candidateId": "30016",
+      "title": "中市議員候選人劉芩妤成立競選總部 喊出「青年參政、改變台中」",
+      "sourceName": "台中地方新聞網"
+    },
+    {
+      "id": "120019",
+      "candidateId": "30016",
+      "title": "劉芩妤：青年政策不能只是口號，要落實到市民生活",
+      "sourceName": "中部時報"
+    },
+    {
+      "id": "120020",
+      "candidateId": "8",
+      "title": "蘇巧慧爭取地方建設，承諾打造新北更美好未來",
+      "sourceName": "今日新聞"
+    },
+    {
+      "id": "120021",
+      "candidateId": "8",
+      "title": "蘇巧慧質詢聚焦幼托政策，呼籲政府加強支持",
+      "sourceName": "自由時報"
+    },
+    {
+      "id": "120022",
+      "candidateId": "8",
+      "title": "蘇巧慧舉辦親子活動，與民眾同樂",
+      "sourceName": "聯合新聞網"
+    },
+    {
+      "id": "120027",
+      "candidateId": "23",
+      "title": "ctinews.com",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "id": "120028",
+      "candidateId": "23",
+      "title": "more-news.tw",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "id": "120029",
+      "candidateId": "23",
+      "title": "newtalk.tw",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "id": "120034",
+      "candidateId": "13",
+      "title": "line.me",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "id": "120035",
+      "candidateId": "13",
+      "title": "ttv.com.tw",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "id": "120036",
+      "candidateId": "13",
+      "title": "setn.com",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "id": "120037",
+      "candidateId": "13",
+      "title": "ettoday.net",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "id": "120038",
+      "candidateId": "13",
+      "title": "yahoo.com",
+      "sourceName": "vertexaisearch.cloud.google.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcandidateId\ttitle\tsourceName\n120018\t30016\t中市議員候選人劉芩妤成立競選總部 喊出「青年參政、改變台中」\t台中地方新聞網\n120019\t30016\t劉芩妤：青年政策不能只是口號，要落實到市民生活\t中部時報\n120020\t8\t蘇巧慧爭取地方建設，承諾打造新北更美好未來\t今日新聞\n120021\t8\t蘇巧慧質詢聚焦幼托政策，呼籲政府加強支持\t自由時報\n120022\t8\t蘇巧慧舉辦親子活動，與民眾同樂\t聯合新聞網\n120027\t23\tctinews.com\tvertexaisearch.cloud.google.com\n120028\t23\tmore-news.tw\tvertexaisearch.cloud.google.com\n120029\t23\tnewtalk.tw\tvertexaisearch.cloud.google.com\n120034\t13\tline.me\tvertexaisearch.cloud.google.com\n120035\t13\tttv.com.tw\tvertexaisearch.cloud.google.com\n120036\t13\tsetn.com\tvertexaisearch.cloud.google.com\n120037\t13\tettoday.net\tvertexaisearch.cloud.google.com\n120038\t13\tyahoo.com\tvertexaisearch.cloud.google.com\n",
+  "stderr": "",
+  "execution_time_ms": 1536
+}

@@ -1,0 +1,34 @@
+{
+  "query": "SELECT DISTINCT sourceName, COUNT(*) as count FROM candidate_news GROUP BY sourceName;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT DISTINCT sourceName, COUNT(*) as count FROM candidate_news GROUP BY sourceName;",
+  "rows": [
+    {
+      "sourceName": "自由時報",
+      "count": "1"
+    },
+    {
+      "sourceName": "中部時報",
+      "count": "1"
+    },
+    {
+      "sourceName": "vertexaisearch.cloud.google.com",
+      "count": "8"
+    },
+    {
+      "sourceName": "今日新聞",
+      "count": "1"
+    },
+    {
+      "sourceName": "聯合新聞網",
+      "count": "1"
+    },
+    {
+      "sourceName": "台中地方新聞網",
+      "count": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "sourceName\tcount\n自由時報\t1\n中部時報\t1\nvertexaisearch.cloud.google.com\t8\n今日新聞\t1\n聯合新聞網\t1\n台中地方新聞網\t1\n",
+  "stderr": "",
+  "execution_time_ms": 1505
+}
