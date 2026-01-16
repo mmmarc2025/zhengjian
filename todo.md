@@ -94,3 +94,13 @@
 - [x] Daily auto-search and update candidate policies (admin trigger)
 - [x] Daily auto-search and update election news (admin trigger)
 - [ ] Auto-search candidate photos when not available
+
+
+## Updates - 2026/01/16 (Phase 3)
+
+### Update All Candidate Photos
+- [x] Query all candidates from database
+- [x] Search photos for all candidates without photos
+- [x] Upload and update photos in database
+
+- [x] Add theme switcher feature (white contour style with blue/red/black colors)

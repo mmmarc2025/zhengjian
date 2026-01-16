@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
@@ -29,6 +30,7 @@ export default function News() {
               政見比較
             </Link>
           </div>
+          <ThemeSwitcher />
         </div>
       </nav>
 

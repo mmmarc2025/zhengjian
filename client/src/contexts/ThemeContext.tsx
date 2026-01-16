@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+// 支援的風格類型
+export type StyleTheme = "dark-gradient" | "light-contour";
 
 interface ThemeContextType {
-  theme: Theme;
-  toggleTheme?: () => void;
+  styleTheme: StyleTheme;
+  setStyleTheme: (theme: StyleTheme) => void;
   switchable: boolean;
 }
 
@@ -12,44 +13,48 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 interface ThemeProviderProps {
   children: React.ReactNode;
-  defaultTheme?: Theme;
+  defaultTheme?: StyleTheme;
   switchable?: boolean;
 }
 
 export function ThemeProvider({
   children,
-  defaultTheme = "light",
-  switchable = false,
+  defaultTheme = "dark-gradient",
+  switchable = true,
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [styleTheme, setStyleThemeState] = useState<StyleTheme>(() => {
     if (switchable) {
-      const stored = localStorage.getItem("theme");
-      return (stored as Theme) || defaultTheme;
+      const stored = localStorage.getItem("styleTheme");
+      return (stored as StyleTheme) || defaultTheme;
     }
     return defaultTheme;
   });
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "dark") {
+    
+    // 移除所有風格類別
+    root.classList.remove("dark-gradient", "light-contour", "dark");
+    
+    // 添加當前風格類別
+    root.classList.add(styleTheme);
+    
+    // 深色主題需要添加 dark 類別
+    if (styleTheme === "dark-gradient") {
       root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
     }
 
     if (switchable) {
-      localStorage.setItem("theme", theme);
+      localStorage.setItem("styleTheme", styleTheme);
     }
-  }, [theme, switchable]);
+  }, [styleTheme, switchable]);
 
-  const toggleTheme = switchable
-    ? () => {
-        setTheme(prev => (prev === "light" ? "dark" : "light"));
-      }
-    : undefined;
+  const setStyleTheme = (theme: StyleTheme) => {
+    setStyleThemeState(theme);
+  };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+    <ThemeContext.Provider value={{ styleTheme, setStyleTheme, switchable }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -62,3 +67,9 @@ export function useTheme() {
   }
   return context;
 }
+
+// 風格名稱對照
+export const STYLE_THEME_NAMES: Record<StyleTheme, string> = {
+  "dark-gradient": "深色漸層",
+  "light-contour": "白色等高線",
+};

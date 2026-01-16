@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -95,6 +96,7 @@ export default function CandidateDetail() {
             <Vote className="w-8 h-8 text-primary" />
             <span className="text-xl font-bold gradient-text">政見</span>
           </Link>
+          <ThemeSwitcher />
         </div>
       </nav>
 

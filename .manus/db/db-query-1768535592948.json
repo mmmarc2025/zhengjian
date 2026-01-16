@@ -1,0 +1,283 @@
+{
+  "query": "SELECT id, name, party, district, photoUrl FROM candidates ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 44rCRZ3gu3Q8wAJ.c61ec059322b --database mBcQNesaSh2sxjfkbEbp2x --execute SELECT id, name, party, district, photoUrl FROM candidates ORDER BY name;",
+  "rows": [
+    {
+      "id": "19",
+      "name": "何志勇",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "11",
+      "name": "何欣純",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "26",
+      "name": "劉建國",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "32",
+      "name": "吳秀華",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "29",
+      "name": "周春米",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "10",
+      "name": "張善政",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/candidates/chang-san-cheng.png"
+    },
+    {
+      "id": "25",
+      "name": "張嘉郡",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "31",
+      "name": "林國璋",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "15",
+      "name": "柯志恩",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/candidates/ko-chih-en.jpg"
+    },
+    {
+      "id": "5",
+      "name": "比較候選人A",
+      "party": "NULL",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "38",
+      "name": "比較候選人A",
+      "party": "NULL",
+      "district": "NULL",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "2",
+      "name": "比較候選人A",
+      "party": "NULL",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "3",
+      "name": "比較候選人B",
+      "party": "NULL",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "39",
+      "name": "比較候選人B",
+      "party": "NULL",
+      "district": "NULL",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "6",
+      "name": "比較候選人B",
+      "party": "NULL",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "24",
+      "name": "温世政",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "37",
+      "name": "測試候選人",
+      "party": "中國國民黨",
+      "district": "第一選區",
+      "photoUrl": "NULL"
+    },
+    {
+      "id": "1",
+      "name": "測試候選人",
+      "party": "中國國民黨",
+      "district": "第一選區",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "4",
+      "name": "測試候選人",
+      "party": "中國國民黨",
+      "district": "第一選區",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "27",
+      "name": "王美惠",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "17",
+      "name": "童子瑋",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "35",
+      "name": "葉竹林",
+      "party": "無黨籍",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "28",
+      "name": "蔡易餘",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "7",
+      "name": "蔣萬安",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/candidates/chiang-wan-an.jpg"
+    },
+    {
+      "id": "8",
+      "name": "蘇巧慧",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/candidates/su-chiao-hui.jpg"
+    },
+    {
+      "id": "30",
+      "name": "蘇清泉",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "23",
+      "name": "許淑華",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "16",
+      "name": "謝國樑",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "13",
+      "name": "謝龍介",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/candidates/hsieh-lung-chieh.jpg"
+    },
+    {
+      "id": "14",
+      "name": "賴瑞隆",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/candidates/lai-jui-lung.jpg"
+    },
+    {
+      "id": "20",
+      "name": "鍾東錦",
+      "party": "中國國民黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "12",
+      "name": "陳亭妃",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/candidates/chen-ting-fei.jpg"
+    },
+    {
+      "id": "34",
+      "name": "陳光復",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "21",
+      "name": "陳品安",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "33",
+      "name": "陳瑩",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "36",
+      "name": "陳盡川",
+      "party": "無黨籍",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "22",
+      "name": "陳素月",
+      "party": "民主進步黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "18",
+      "name": "高虹安",
+      "party": "無黨籍",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    },
+    {
+      "id": "9",
+      "name": "黃國昌",
+      "party": "台灣民眾黨",
+      "district": "NULL",
+      "photoUrl": "/images/silhouette.png"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tparty\tdistrict\tphotoUrl\n19\t何志勇\t中國國民黨\tNULL\t/images/silhouette.png\n11\t何欣純\t民主進步黨\tNULL\t/images/silhouette.png\n26\t劉建國\t民主進步黨\tNULL\t/images/silhouette.png\n32\t吳秀華\t中國國民黨\tNULL\t/images/silhouette.png\n29\t周春米\t民主進步黨\tNULL\t/images/silhouette.png\n10\t張善政\t中國國民黨\tNULL\t/images/candidates/chang-san-cheng.png\n25\t張嘉郡\t中國國民黨\tNULL\t/images/silhouette.png\n31\t林國璋\t民主進步黨\tNULL\t/images/silhouette.png\n15\t柯志恩\t中國國民黨\tNULL\t/images/candidates/ko-chih-en.jpg\n5\t比較候選人A\tNULL\tNULL\t/images/silhouette.png\n38\t比較候選人A\tNULL\tNULL\tNULL\n2\t比較候選人A\tNULL\tNULL\t/images/silhouette.png\n3\t比較候選人B\tNULL\tNULL\t/images/silhouette.png\n39\t比較候選人B\tNULL\tNULL\tNULL\n6\t比較候選人B\tNULL\tNULL\t/images/silhouette.png\n24\t温世政\t民主進步黨\tNULL\t/images/silhouette.png\n37\t測試候選人\t中國國民黨\t第一選區\tNULL\n1\t測試候選人\t中國國民黨\t第一選區\t/images/silhouette.png\n4\t測試候選人\t中國國民黨\t第一選區\t/images/silhouette.png\n27\t王美惠\t民主進步黨\tNULL\t/images/silhouette.png\n17\t童子瑋\t民主進步黨\tNULL\t/images/silhouette.png\n35\t葉竹林\t無黨籍\tNULL\t/images/silhouette.png\n28\t蔡易餘\t民主進步黨\tNULL\t/images/silhouette.png\n7\t蔣萬安\t中國國民黨\tNULL\t/images/candidates/chiang-wan-an.jpg\n8\t蘇巧慧\t民主進步黨\tNULL\t/images/candidates/su-chiao-hui.jpg\n30\t蘇清泉\t中國國民黨\tNULL\t/images/silhouette.png\n23\t許淑華\t中國國民黨\tNULL\t/images/silhouette.png\n16\t謝國樑\t中國國民黨\tNULL\t/images/silhouette.png\n13\t謝龍介\t中國國民黨\tNULL\t/images/candidates/hsieh-lung-chieh.jpg\n14\t賴瑞隆\t民主進步黨\tNULL\t/images/candidates/lai-jui-lung.jpg\n20\t鍾東錦\t中國國民黨\tNULL\t/images/silhouette.png\n12\t陳亭妃\t民主進步黨\tNULL\t/images/candidates/chen-ting-fei.jpg\n34\t陳光復\t民主進步黨\tNULL\t/images/silhouette.png\n21\t陳品安\t民主進步黨\tNULL\t/images/silhouette.png\n33\t陳瑩\t民主進步黨\tNULL\t/images/silhouette.png\n36\t陳盡川\t無黨籍\tNULL\t/images/silhouette.png\n22\t陳素月\t民主進步黨\tNULL\t/images/silhouette.png\n18\t高虹安\t無黨籍\tNULL\t/images/silhouette.png\n9\t黃國昌\t台灣民眾黨\tNULL\t/images/silhouette.png\n",
+  "stderr": "",
+  "execution_time_ms": 1495
+}
