@@ -37,7 +37,7 @@ interface GeminiResponse {
  * Call Gemini API with Google Search Grounding enabled
  * Returns both the text response and the grounding sources
  */
-async function callGeminiWithSearch(prompt: string): Promise<{
+export async function callGeminiWithSearch(prompt: string): Promise<{
   text: string;
   sources: Array<{ uri: string; title: string }>;
   searchQueries: string[];
