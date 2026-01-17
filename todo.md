@@ -334,3 +334,23 @@
 
 - [ ] 刪除資料庫中 sourceName 為 'vertexaisearch' 的所有新聞
 - [ ] 確認前端不再顯示錯誤的來源名稱
+
+
+## 定期排程系統與新聞搜尋優化 - 2026/01/17 (Phase 22)
+
+### Gemini 模型確認
+- [x] 確認 Gemini 模型設定為 gemini-3-flash-preview
+
+### 定期排程系統 (server/scheduler.ts)
+- [x] 實作每 6 小時執行的 cron job
+- [x] 遍歷資料庫中的候選人，自動更新基本資料與政見
+- [x] 自動搜尋並新增新聞
+
+### 新聞搜尋優化 (server/gemini-search.ts)
+- [x] 更新 Prompt，明確要求搜尋「正面新聞」與「政績」
+- [x] 過濾未經證實的謠言，優先採用最具公信力的媒體來源
+- [x] 回應格式包含：標題、AI 摘要（強調具體貢獻）、來源連結
+
+### 伺服器整合
+- [x] 伺服器啟動時自動開啟排程器
+- [x] 新增手動觸發 API (candidate.triggerUpdate)

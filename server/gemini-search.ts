@@ -8,7 +8,7 @@
  */
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_SEARCH_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const GEMINI_SEARCH_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 
 interface GroundingChunk {
   web?: {
@@ -321,8 +321,19 @@ export async function searchCandidateNewsWithSources(
     console.log(`[GeminiSearch] Searching news for ${candidateName}...`);
     
     // Phase 1: Search for news with grounding to get real sources and content
-    const searchPrompt = `請搜尋 ${count} 則「${candidateName}」的正面新聞報導（政績、爭取經費、服務選民等）。
-請列出每則新聞的標題、日期、內容摘要和來源。`;
+    const searchPrompt = `請搜尋 ${count} 則「${candidateName}」（${county}）的正面新聞報導。
+
+搜尋條件：
+1. 優先搜尋「政績」、「爭取經費」、「服務選民」、「推動政策」、「建設成果」等正面新聞
+2. 優先採用公信力高的媒體來源：中央社、聯合新聞網、自由時報、中時新聞網、ETtoday、TVBS
+3. 過濾未經證實的謠言或爭議性報導
+4. 避免選舉攻擊或負面新聞
+
+請列出每則新聞的：
+- 標題
+- 日期
+- 內容摘要（強調候選人的具體貢獻）
+- 來源名稱和連結`;
     
     const { text: searchResult, sources } = await callGeminiWithSearch(searchPrompt);
     
@@ -348,17 +359,18 @@ ${searchResult}
   {
     "title": "新聞標題",
     "date": "YYYY/MM/DD",
-    "summary": "內容摘要（100-150字）",
+    "summary": "內容摘要（100-150字，強調候選人的具體貢獻和成果）",
     "sourceUrl": "新聞連結",
-    "sourceName": "來源名稱（如：中央社、聯合新聞網、自由時報）"
+    "sourceName": "來源名稱（如：中央社、聯合新聞網、自由時報、中時新聞網、ETtoday、TVBS）"
   }
 ]
 
 注意：
-1. 只提取明確提到的新聞
-2. 摘要必須基於搜尋結果中的實際內容
-3. 如果沒有明確的連結，請留空
-4. 回傳有效的 JSON 陣列，開頭是 [ 結尾是 ]`;
+1. 只提取明確提到的正面新聞
+2. 摘要必須強調候選人的具體貢獻和成果
+3. 過濾爭議性或負面報導
+4. 如果沒有明確的連結，請留空
+5. 回傳有效的 JSON 陣列，開頭是 [ 結尾是 ]`;
     
     const parseResult = await callGemini(parsePrompt);
     

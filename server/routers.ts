@@ -159,6 +159,15 @@ const candidateRouter = router({
       }
       return { success: true, updatedCount: ids.length };
     }),
+
+  // Trigger manual update for a candidate (news + policies)
+  triggerUpdate: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      const { triggerCandidateUpdate } = await import("./scheduler");
+      const result = await triggerCandidateUpdate(input.id);
+      return result;
+    }),
 });
 
 // ============ Policy Router ============
